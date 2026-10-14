@@ -1,0 +1,8 @@
+key,name_en,name_mr,n,p2o5,k2o,price_per_kg,bag_kg,source,note
+urea,Urea (46-0-0),युरिया (४६-०-०),0.46,0,0,5.9,45,Indicative retail MRP 2024-25,Cheapest nitrogen source; edit to your local dealer price
+dap,DAP (18-46-0),डीएपी (१८-४६-०),0.18,0.46,0,27.0,50,Indicative retail MRP 2024-25,Supplies both N and P
+mop,MOP / Muriate of potash (0-0-60),एमओपी / म्युरिएट ऑफ पोटॅश (०-०-६०),0,0,0.60,34.0,50,Indicative retail MRP 2024-25,Cheapest potash source
+ssp,SSP / Single super phosphate (0-16-0),एसएसपी / सिंगल सुपर फॉस्फेट (०-१६-०),0,0.16,0,8.0,50,Indicative retail MRP 2024-25,Economy P source - also adds sulphur and calcium
+tsp,TSP / Triple super phosphate (0-46-0),टीएसपी / ट्रिपल सुपर फॉस्फेट (०-४६-०),0,0.46,0,32.0,50,Indicative retail MRP 2024-25,Concentrated P source
+ammonium_sulphate,Ammonium sulphate (21-0-0),अमोनियम सल्फेट (२१-०-०),0.21,0,0,15.0,50,Indicative retail MRP 2024-25,N plus sulphur; useful on alkaline soils
+sop,SOP / Sulphate of potash (0-0-50),एसओपी / सल्फेट ऑफ पोटॅश (०-०-५०),0,0,0.50,55.0,50,Indicative retail MRP 2024-25,Premium chloride-free potash for sensitive crops

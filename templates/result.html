@@ -1,0 +1,610 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% set view_mode = view.mode %}
+{% set crop_name = view.chosen.name if view.chosen else view.crop %}
+{% block title %}{{ crop_name }} - recommendation{% endblock %}
+
+{% block body %}
+{% set months = month_labels_mr if lang == 'mr' else month_labels %}
+{% set resolved = view.resolved %}
+{% set soil = resolved.soil %}
+{% set climate = resolved.climate %}
+{% set prediction = view.prediction %}
+{% set fertilizer = view.fertilizer %}
+{% set calendar = view.calendar %}
+{% set market = view.market %}
+{% set water = view.water %}
+{% set spray = view.spray %}
+{% set available = soil.available %}
+{% set all_warnings = view.warnings + (resolved.warnings or []) %}
+
+<div class="page-head">
+    <div class="container-xl page-head-inner">
+        <div>
+            <div class="eyebrow">{{ 'शिफारस तयार' if lang == 'mr' else 'Recommendation ready' }}</div>
+            <h1>{{ crop_name|title }}</h1>
+            <p class="sub">
+                {{ resolved.location.district }}{% if resolved.location.state %}, {{ resolved.location.state }}{% endif %}
+                &middot; {{ months[resolved.month - 1] }}
+                &middot; {{ 'सूचना जुळवणी' if lang == 'mr' else 'soil matched to this point' }}
+            </p>
+        </div>
+        <div class="head-actions">
+            <a href="{{ url_for('main.recommend_view') }}" class="btn-ghost dark">
+                <i class="bi bi-arrow-left"></i> {{ 'बदला' if lang == 'mr' else 'Change inputs' }}
+            </a>
+            {% if current_user.is_authenticated %}
+            <a href="{{ url_for('main.farms') }}" class="btn-soft"><i class="bi bi-seedling"></i> {{ 'माझी शेते' if lang == 'mr' else 'My farms' }}</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div class="container-xl page-body">
+
+    {# ---------------------------------------------------- hero #}
+    <div class="result-hero {% if view_mode == 'vegetables' %}veg{% endif %}">
+        {% if view_mode == 'ml' %}
+        <img class="crop-photo" src="{{ url_for('static', filename='img/' + view.crop + '.jpg') }}" alt="{{ view.crop }}">
+        {% else %}
+        <div class="crop-photo" style="display:flex;align-items:center;justify-content:center;font-size:2rem;color:#15803d;background:#f0fdf4;">
+            <i class="bi bi-flower2"></i>
+        </div>
+        {% endif %}
+
+        <div class="result-title">
+            <div class="result-where">{{ 'तुमच्या पिनसाठी सूचना' if lang == 'mr' else 'Recommendation for your pin' }}</div>
+            <h1>{{ crop_name }}</h1>
+            <div class="result-meta">
+                {% if prediction and prediction.confidence is not none %}
+                <span class="badge-soft">{{ (prediction.confidence * 100)|round(1) }}% model confidence</span>
+                {% elif view.chosen %}
+                <span class="badge-soft">{{ 'नियम-आधारित निवड' if lang == 'mr' else 'Rule-based pick' }}</span>
+                {% endif %}
+                {% if view.category_info %}
+                <span class="badge-soft neutral"><i class="bi {{ view.category_info.icon }}"></i>
+                    {{ view.category_info.label_mr if lang == 'mr' else view.category_info.label_en }}</span>
+                {% endif %}
+                {% if prediction and prediction.group_filtered %}
+                <span class="badge-soft neutral">{{ 'गटातील पीक' if lang == 'mr' else 'Filtered to your group' }}</span>
+                {% endif %}
+                {% if water and water.known %}
+                <span class="badge-soft {{ 'neutral' if water.sufficient else 'sun' }}">
+                    <i class="bi bi-droplet"></i>
+                    {{ water.source_label }}{% if water.days_per_week is not none %} · {{ water.days_per_week }}/{{ 'week' if lang == 'en' else 'आठवडा' }}{% endif %}
+                </span>
+                {% endif %}
+            </div>
+
+            {% if prediction and prediction.top %}
+            <div class="alt-row mt-2">
+                {% for item in prediction.top %}
+                <span class="alt-pill">{{ item.crop }} <strong>{{ (item.probability * 100)|round(0) }}%</strong></span>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="price-block">
+            {% if market and market.price %}
+            <div class="big">₹{{ market.price|int }}<small>/{{ market.unit.split('/')[1] if market.unit and '/' in market.unit else 'quintal' }}</small></div>
+            {% if market.change_pct is not none %}
+            <div class="trend {{ market.trend }}">
+                <i class="bi bi-arrow-{{ 'up' if market.trend == 'up' else ('down' if market.trend == 'down' else 'right') }}"></i>
+                {{ market.change_pct }}% vs {{ market.prev_year }}
+            </div>
+            {% endif %}
+            <div class="src">MSP {{ market.year }}</div>
+            {% else %}
+            <div class="big" style="font-size:1rem;color:#667a70;">{{ 'मंडी दर' if lang == 'mr' else 'Market rate' }}</div>
+            <div class="src">{{ market.note if market else ('MSP नोंद नाही.' if lang == 'mr' else 'No MSP entry.') }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% for text in all_warnings %}
+    <div class="notice warn"><i class="bi bi-exclamation-triangle"></i><span>{{ text }}</span></div>
+    {% endfor %}
+    {% if view_mode == 'vegetables' and view.chosen %}
+    <div class="notice info"><i class="bi bi-info-circle"></i>
+        <span>{{ 'भाजीपाला मॉडेलच्या 22 पिकांमध्ये नाही - शिफारस हंगाम, तापमान आणि तुमचे पाणी यावर आधारित आहे.'
+               if lang == 'mr'
+               else 'Vegetables are not part of the 22-crop ML training set, so this pick comes from the sowing window, temperature fit and your water - not the classifier.' }}</span>
+    </div>
+    {% endif %}
+    {% if view.excluded %}
+    <div class="notice warn"><i class="bi bi-shield-exclamation"></i>
+        <span>
+            {{ 'या परिस्थितीसाठी या पिकांची शिफारस केली जात नाही:' if lang == 'mr' else 'These crops were left out for this location / season:' }}
+            {% for row in view.excluded %}
+            <strong>{{ row.name_mr if lang == 'mr' else row.name }}</strong> ({{ row.reason_mr if lang == 'mr' else row.reason }}){% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </span>
+    </div>
+    {% endif %}
+
+    {# ---------------------------------------------------- vegetable suggestions #}
+    {% if view_mode == 'vegetables' and view.suggestions %}
+    <div class="panel">
+        <div class="panel-head">
+            <h2><i class="bi bi-card-checklist"></i> {{ 'या महिन्यातील भाज्या' if lang == 'mr' else 'Vegetables that fit this month' }}</h2>
+        </div>
+        <div class="sugg-list">
+            {% for row in view.suggestions %}
+            <div class="sugg-card {% if loop.first %}best{% endif %}">
+                <span class="crop-thumb" style="background:linear-gradient(135deg,#dcfce7,#86efac);"></span>
+                <div>
+                    <h4>{{ row.name_mr if lang == 'mr' else row.name }}
+                        {% if loop.first %}<span class="badge-soft" style="font-size:0.68rem;">{{ 'सुचवलेले' if lang == 'mr' else 'Top pick' }}</span>{% endif %}
+                    </h4>
+                    <div class="small text-muted">
+                        {{ row.duration_days }} {{ 'दिवस' if lang == 'mr' else 'days' }} &middot;
+                        {% if lang == 'mr' %}{{ {'low': 'कमी', 'medium': 'मध्यम', 'high': 'जास्त'}.get(row.water_need, row.water_need) }} पाणी{% else %}{{ row.water_need }} water{% endif %}
+                        &middot; {{ 'पेरणी' if lang == 'mr' else 'sowing' }}: {{ row.sowing_months|join(', ') }}
+                    </div>
+                    <div class="sugg-reasons">
+                        {% for reason in (row.reasons_mr if lang == 'mr' else row.reasons) %}<span>{{ reason }}</span>{% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {# ---------------------------------------------------- water + fertilizer + data #}
+    <div class="two-col">
+        <div>
+            {% if water %}
+            <div class="panel">
+                <div class="panel-head">
+                    <h2><i class="bi bi-droplet-half"></i> {{ 'पाण्याची उपलब्धता' if lang == 'mr' else 'Water for this field' }}</h2>
+                    {% if water.status == 'ok' %}<span class="badge-soft">{{ 'पुरेसे' if lang == 'mr' else 'Sufficient' }}</span>{% endif %}
+                    {% if water.status == 'short' %}<span class="badge-soft sun">{{ 'कमी' if lang == 'mr' else 'Short' }}</span>{% endif %}
+                    {% if water.status == 'unknown' %}<span class="badge-soft neutral">{{ 'माहीत नाही' if lang == 'mr' else 'Not declared' }}</span>{% endif %}
+                </div>
+                <div class="data-list">
+                    <div class="data-row"><span>{{ 'पीकाची गरज' if lang == 'mr' else 'Crop water need' }}</span>
+                        <strong>{{ water.need_label_mr if lang == 'mr' else water.need_label }} ({{ water.required_days }}/wk)</strong></div>
+                    <div class="data-row"><span>{{ 'तुमचे स्रोत' if lang == 'mr' else 'Your source' }}</span>
+                        <strong>{{ water.source_label_mr if lang == 'mr' else (water.source_label or 'Not declared') }}</strong></div>
+                    {% if water.days_per_week is not none %}
+                    <div class="data-row"><span>{{ 'सिंचन दिवस' if lang == 'mr' else 'Irrigation days' }}</span>
+                        <strong>{{ water.days_per_week }}/week</strong></div>
+                    {% endif %}
+                    <div class="data-row"><span>{{ 'संचनांत अंतर' if lang == 'mr' else 'Irrigation gap' }}</span>
+                        <strong>{{ water.interval_days }} {{ 'दिवस' if lang == 'mr' else 'days' }}</strong></div>
+                    {% if water.season_mm %}
+                    <div class="data-row"><span>{{ 'हंगामातील पाणी' if lang == 'mr' else 'Season water need' }}</span>
+                        <strong>{{ water.season_mm }} mm</strong></div>
+                    {% endif %}
+                </div>
+                <div class="notice {% if water.status == 'ok' %}ok{% elif water.status == 'short' %}warn{% else %}info{% endif %} mt-3 mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    <span>{{ water.advice_mr if lang == 'mr' else water.advice_en }}</span>
+                </div>
+                {% if not water.known %}
+                <p class="small text-muted mt-2 mb-0">
+                    {{ water.generic_note_mr if lang == 'mr' else water.generic_note_en }}
+                </p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2><i class="bi bi-list-check"></i> {{ 'खत, फवारणी व कॅलेंडर' if lang == 'mr' else 'Fertilizer, spray & calendar' }}</h2>
+                    {% if fertilizer.available and fertilizer.area_acres %}
+                    <span class="small text-muted">{{ fertilizer.area_acres }} {{ 'एकर' if lang == 'mr' else 'ac' }}</span>
+                    {% endif %}
+                </div>
+
+                <ul class="nav nav-tabs tx-tabs mb-3" id="planTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="fert-tab" data-bs-toggle="tab" data-bs-target="#pane-fert" type="button" role="tab">
+                            <i class="bi bi-droplet"></i> {{ 'खत डोस व किंमत' if lang == 'mr' else 'Fertilizer dose & price' }}
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="spray-tab" data-bs-toggle="tab" data-bs-target="#pane-spray" type="button" role="tab">
+                            <i class="bi bi-bug"></i> {{ 'फवारणी खर्च' if lang == 'mr' else 'Spray prices' }}
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="cal-tab" data-bs-toggle="tab" data-bs-target="#pane-calendar" type="button" role="tab">
+                            <i class="bi bi-calendar3"></i> {{ 'पीक कॅलेंडर व कामे' if lang == 'mr' else 'Crop calendar & tasks' }}
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="planTabsContent">
+                <div class="tab-pane fade show active" id="pane-fert" role="tabpanel">
+                {% if fertilizer.available %}
+                <div class="dose-grid">
+                    <div class="dose-cell"><strong>{{ fertilizer.products.urea_kg_ha }}</strong><span>Urea kg/ha</span></div>
+                    <div class="dose-cell"><strong>{{ fertilizer.products.dap_kg_ha }}</strong><span>DAP kg/ha</span></div>
+                    <div class="dose-cell"><strong>{{ fertilizer.products.mop_kg_ha }}</strong><span>MOP kg/ha</span></div>
+                    <div class="dose-cell"><strong>{{ fertilizer.npk_ratio }}</strong><span>N:P:K as applied</span></div>
+                </div>
+
+                {% if fertilizer.plan %}
+                <table class="table-slim">
+                    <thead>
+                        <tr>
+                            <th>{{ 'टप्पा' if lang == 'mr' else 'Stage' }}</th>
+                            <th class="num">{{ 'दिवस' if lang == 'mr' else 'Day' }}</th>
+                            <th class="num">Urea</th>
+                            <th class="num">DAP</th>
+                            <th class="num">MOP</th>
+                            <th class="num">kg/ac</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for stage in fertilizer.plan %}
+                        <tr>
+                            <td>{% if lang == 'mr' and stage.stage_mr %}{{ stage.stage_mr }}{% else %}{{ stage.stage_en }}{% endif %}</td>
+                            <td class="num">{{ stage.day }}</td>
+                            <td class="num">{{ stage.urea_kg_ha }}</td>
+                            <td class="num">{{ stage.dap_kg_ha }}</td>
+                            <td class="num">{{ stage.mop_kg_ha }}</td>
+                            <td class="num text-muted">{{ stage.per_acre.urea }}/{{ stage.per_acre.dap }}/{{ stage.per_acre.mop }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+
+                {% if fertilizer.total_for_farm %}
+                <div class="notice ok mt-3 mb-0">
+                    <i class="bi bi-calculator"></i>
+                    <span>
+                        {{ 'एकूण' if lang == 'mr' else 'For your' }} {{ fertilizer.area_acres }} ac:
+                        <strong>{{ fertilizer.total_for_farm.urea }} kg urea</strong>,
+                        <strong>{{ fertilizer.total_for_farm.dap }} kg DAP</strong>,
+                        <strong>{{ fertilizer.total_for_farm.mop }} kg MOP</strong>.
+                    </span>
+                </div>
+                {% endif %}
+
+                <div class="small text-muted mt-3">
+                    {{ 'मातीतील पुरवठा' if lang == 'mr' else 'Soil supply' }}:
+                    N {{ fertilizer.soil_available_kg_ha.n }} / P {{ fertilizer.soil_available_kg_ha.p }} / K {{ fertilizer.soil_available_kg_ha.k }} kg/ha
+                    &middot; {{ 'पिकाची गरज' if lang == 'mr' else 'Crop need' }}:
+                    N {{ fertilizer.requirement_kg_ha.n }} / P {{ fertilizer.requirement_kg_ha.p }} / K {{ fertilizer.requirement_kg_ha.k }} kg/ha
+                    ({{ fertilizer.target_yield_t_ha }} t/ha).
+                    {% for note in (fertilizer.notes_mr if lang == 'mr' else fertilizer.notes) %}<br>{{ note }}{% endfor %}
+                    <br><em>{{ fertilizer.disclaimer_mr if lang == 'mr' else fertilizer.disclaimer }}</em>
+                </div>
+                {% else %}
+                <p class="text-muted mb-0">{{ fertilizer.note_mr if lang == 'mr' else fertilizer.note }}</p>
+                {% endif %}
+
+                {% if fertilizer.cost %}
+                <div class="f-label mt-4 mb-2"><i class="bi bi-cash-coin"></i>
+                    {{ 'अंदाजे खत खर्च' if lang == 'mr' else 'Estimated fertilizer cost' }}</div>
+                <div class="cost-grid">
+                    {% for opt in fertilizer.cost.options %}
+                    <div class="cost-card {% if opt.is_cheapest %}best{% endif %}">
+                        <div class="cost-name">{% if opt.is_cheapest %}<i class="bi bi-star-fill"></i> {% endif %}{{ opt.label_mr if lang == 'mr' else opt.label_en }}</div>
+                        <div class="cost-amount">₹{{ opt.cost_per_acre }}<small>/{{ 'एकर' if lang == 'mr' else 'acre' }}</small></div>
+                        {% if opt.total %}<div class="small text-muted">₹{{ opt.total }} {{ 'एकूण' if lang == 'mr' else 'total' }}</div>{% endif %}
+                        <table class="table-slim mt-2">
+                            <tbody>
+                                {% for line in opt.lines %}
+                                <tr>
+                                    <td>{{ line.label_mr if lang == 'mr' else line.label_en }}</td>
+                                    <td class="num text-muted">{{ line.kg_acre }} kg</td>
+                                    <td class="num">₹{{ line.cost_ha }}{{ '/ha' if lang == 'en' else '/हे' }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% if fertilizer.cost.savings.per_acre > 0 %}
+                <div class="notice ok mt-3 mb-0">
+                    <i class="bi bi-piggy-bank"></i>
+                    <span>
+                        {{ 'किफायतशीर पर्यायाने' if lang == 'mr' else 'The economy option saves about' }}
+                        <strong>₹{{ fertilizer.cost.savings.per_acre }}/{{ 'एकर' if lang == 'mr' else 'acre' }}</strong>
+                        ({{ fertilizer.cost.savings.pct }}%){% if fertilizer.cost.savings.total %},
+                        <strong>₹{{ fertilizer.cost.savings.total }}</strong> {{ 'एकूण' if lang == 'mr' else 'total' }}{% endif %}.
+                    </span>
+                </div>
+                {% endif %}
+                <div class="small text-muted mt-2">
+                    <em>{{ fertilizer.cost.price_source_mr if lang == 'mr' else fertilizer.cost.price_source }}.
+                    {{ fertilizer.cost.disclaimer_mr if lang == 'mr' else fertilizer.cost.disclaimer }}</em>
+                </div>
+                {% endif %}
+                </div>{# /pane-fert #}
+
+                <div class="tab-pane fade" id="pane-spray" role="tabpanel">
+                {% if spray and spray.available %}
+                <table class="table-slim">
+                    <thead>
+                        <tr>
+                            <th>{{ 'कीड / रोग' if lang == 'mr' else 'Pest / disease' }}</th>
+                            <th>{{ 'शिफारस केलेले' if lang == 'mr' else 'Recommended' }}</th>
+                            <th class="num">{{ 'खर्च/एकर' if lang == 'mr' else '₹/acre' }}</th>
+                            <th>{{ 'पर्याय' if lang == 'mr' else 'Alternative' }}</th>
+                            <th class="num">{{ 'खर्च/एकर' if lang == 'mr' else '₹/acre' }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in spray.rows %}
+                        <tr>
+                            <td>
+                                <strong>{{ row.name_mr if lang == 'mr' else row.name_en }}</strong>
+                                {% if row.from is not none %}<div class="small text-muted">D{{ row.from }}-D{{ row.to }}</div>{% endif %}
+                            </td>
+                            <td>
+                                {% if row.primary %}
+                                {{ row.primary.name_mr if lang == 'mr' else row.primary.name_en }}
+                                {% if row.primary.is_bio %}<span class="badge-soft" style="font-size:0.62rem;">bio</span>{% endif %}
+                                <div class="small text-muted">{{ row.primary.rate_ha }} {{ row.primary.unit }}/ha</div>
+                                {% else %}<span class="small text-muted">—</span>{% endif %}
+                            </td>
+                            <td class="num">{% if row.primary %}₹{{ row.primary.cost_per_acre }}{% else %}—{% endif %}</td>
+                            <td>
+                                {% if row.alt %}
+                                {{ row.alt.name_mr if lang == 'mr' else row.alt.name_en }}
+                                {% if row.alt.is_bio %}<span class="badge-soft" style="font-size:0.62rem;">bio</span>{% endif %}
+                                {% if row.alt_cheaper %}<span class="badge-soft" style="font-size:0.62rem;">{{ 'स्वस्त' if lang == 'mr' else 'cheaper' }}</span>{% endif %}
+                                <div class="small text-muted">{{ row.alt.rate_ha }} {{ row.alt.unit }}/ha</div>
+                                {% else %}<span class="small text-muted">—</span>{% endif %}
+                            </td>
+                            <td class="num">{% if row.alt %}₹{{ row.alt.cost_per_acre }}{% else %}—{% endif %}</td>
+                        </tr>
+                        {% if row.control_en %}
+                        <tr class="spray-note-row">
+                            <td colspan="5" class="small text-muted">{{ row.control_mr if lang == 'mr' else row.control_en }}</td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if spray.has_cost %}
+                <div class="data-list mt-3">
+                    <div class="data-row"><span>{{ 'फवारणीचा खर्च' if lang == 'mr' else 'Spray cost' }} ({{ spray.applications }}x)</span>
+                        <strong>₹{{ spray.totals.per_acre }}/{{ 'एकर' if lang == 'mr' else 'acre' }}{% if spray.totals.total %} · ₹{{ spray.totals.total }}{% endif %}</strong></div>
+                    {% if spray.savings.per_acre > 0 %}
+                    <div class="data-row"><span>{{ 'स्वस्त पर्यायांनी बचत' if lang == 'mr' else 'Savings with cheaper options' }}</span>
+                        <strong>₹{{ spray.savings.per_acre }}{{ '/एकर' if lang == 'mr' else '/acre' }} ({{ spray.savings.pct }}%)</strong></div>
+                    {% endif %}
+                </div>
+                <div class="notice info mt-3 mb-0"><i class="bi bi-info-circle"></i>
+                    <span>{{ spray.disclaimer_mr if lang == 'mr' else spray.disclaimer_en }}</span>
+                </div>
+                <div class="small text-muted mt-2"><em>{{ spray.price_source_mr if lang == 'mr' else spray.price_source_en }}</em></div>
+                {% endif %}
+                {% else %}
+                <p class="text-muted mb-0">{{ 'या पिकासाठी फवारणी माहिती उपलब्ध नाही.' if lang == 'mr' else 'No spray detail for this crop yet.' }}</p>
+                {% endif %}
+                </div>{# /pane-spray #}
+
+                <div class="tab-pane fade" id="pane-calendar" role="tabpanel">
+                {% if calendar %}
+                <div class="small mb-2">
+                    <strong>{{ 'पेरणी:' if lang == 'mr' else 'Sowing:' }}</strong>
+                    {{ calendar.sowing_mr if lang == 'mr' else calendar.sowing_en }}
+                    <br>
+                    <strong>{{ 'सिंचन:' if lang == 'mr' else 'Irrigation:' }}</strong>
+                    {{ calendar.irrigation_mr if lang == 'mr' else calendar.irrigation_en }}
+                </div>
+                {% if calendar.stages %}
+                <div class="stage-strip mb-3">
+                    {% for stage in calendar.stages %}
+                    <span class="stage-chip">D{{ stage.day }} · {{ stage.mr if lang == 'mr' else stage.en }}</span>
+                    {% endfor %}
+                </div>
+                {% endif %}
+
+                <div class="f-label">{{ 'कीटक व रोग खिडक्या' if lang == 'mr' else 'Pest & disease windows' }}</div>
+                {% for pest in (calendar.pests or []) %}
+                <div class="pest-line">
+                    <strong>D{{ pest.from }}-D{{ pest.to }}</strong>:
+                    {{ pest.mr if lang == 'mr' else pest.en }}
+                    <small>{{ (pest.control_mr if lang == 'mr' else pest.control_en) }}</small>
+                </div>
+                {% else %}
+                <div class="small text-muted">—</div>
+                {% endfor %}
+
+                {% if view.schedule %}
+                <div class="f-label mt-4 mb-2"><i class="bi bi-check2-square"></i>
+                    {{ 'काय व कधी करावे' if lang == 'mr' else 'What to do & when' }}
+                    <span class="text-muted" style="font-weight:400;font-size:0.8rem;">
+                        ({{ 'पेरणी' if lang == 'mr' else 'sowing' }} {{ view.sowing.strftime('%d %b %Y') }})</span>
+                </div>
+                <table class="table-slim">
+                    <thead>
+                        <tr>
+                            <th>{{ 'काम' if lang == 'mr' else 'Task' }}</th>
+                            <th class="num">{{ 'दिनांक' if lang == 'mr' else 'Date' }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task in view.schedule %}
+                        <tr>
+                            <td>
+                                <strong>{{ task.title_mr if lang == 'mr' else task.title_en }}</strong>
+                                <div class="small text-muted">{{ task.detail_mr if lang == 'mr' else task.detail_en }}</div>
+                            </td>
+                            <td class="num" style="white-space:nowrap;">{{ task.due_date.strftime('%d %b %Y') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="small text-muted mt-2"><em>
+                    {{ 'दिनांक निवडलेल्या महिन्याच्या १ तारखेपासून दर्शक आहेत; खरा पेरणी दिनांक देऊन जतन केल्यास कामे त्यानुसार फेरनियोजित होतील.'
+                       if lang == 'mr'
+                       else 'Dates are indicative, counted from the 1st of the chosen month; saving with your real sowing date reschedules them.' }}
+                </em></div>
+                {% endif %}
+                {% else %}
+                <p class="text-muted mb-0">{{ 'या पिकासाठी कॅलेंडर माहिती उपलब्ध नाही.' if lang == 'mr' else 'No calendar detail for this crop yet.' }}</p>
+                {% endif %}
+                </div>{# /pane-calendar #}
+                </div>{# /tab-content #}
+            </div>
+        </div>
+
+        <div>
+            <div class="panel">
+                <div class="panel-head">
+                    <h2><i class="bi bi-graph-up-arrow"></i> {{ 'बाजार आणि किम्मी' if lang == 'mr' else 'Market & price' }}</h2>
+                </div>
+
+                {% if market and market.has_history %}
+                <div class="hist-bars">
+                    {% set prices = market.history | map(attribute='price') | list %}
+                    {% set maxp = prices|max %}
+                    {% for row in market.history %}
+                    <div class="hist-col">
+                        <div class="hist-val">₹{{ row.price|int }}</div>
+                        <div class="hist-bar {% if row.year == market.year %}{% else %}dim{% endif %}"
+                             style="height: {{ (row.price / maxp * 74)|round }}%;"></div>
+                        <div class="hist-year">{{ row.year }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% elif market %}
+                <div class="notice info mb-2"><i class="bi bi-info-circle"></i>
+                    <span>{{ market.note or ('या पिकासाठी अद्याप जाहीर MSP इतिहास नाही.' if lang == 'mr' else 'No notified MSP history for this crop yet.') }}</span>
+                </div>
+                {% endif %}
+
+                {% if market and market.revenue %}
+                <div class="data-list mt-2">
+                    <div class="data-row"><span>{{ 'लक्ष्य उत्पादन' if lang == 'mr' else 'Target yield' }}</span>
+                        <strong>{{ market.revenue.yield_t_ha }} t/ha</strong></div>
+                    <div class="data-row"><span>{{ 'एकराला अंदाजे' if lang == 'mr' else 'Gross value per acre' }}</span>
+                        <strong>₹{{ market.revenue.per_acre|int }}</strong></div>
+                    {% if market.revenue.total %}
+                    <div class="data-row"><span>{{ market.revenue.area_acres }} {{ 'एकराची एकूण रक्कम' if lang == 'mr' else 'acres, gross total' }}</span>
+                        <strong>₹{{ market.revenue.total|int }}</strong></div>
+                    {% endif %}
+                    {% if market.harvest_days %}
+                    <div class="data-row"><span>{{ 'कापणीसाठी' if lang == 'mr' else 'Time to harvest' }}</span>
+                        <strong>~{{ market.harvest_days }} {{ 'दिवस' if lang == 'mr' else 'days' }}</strong></div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="small text-muted mt-3">
+                    {{ market.advice_mr if lang == 'mr' else market.advice_en if market else '' }}
+                    <br><em>{{ (market.verify_mr if lang == 'mr' else market.verify) if market else '' }}</em>
+                </div>
+
+                {% if view.markets %}
+                <div class="mt-3">
+                    <div class="f-label">{{ 'उजळ पर्यायांची किम्मी' if lang == 'mr' else 'Price check on the shortlist' }}</div>
+                    <table class="table-slim">
+                        <thead>
+                            <tr><th>{{ 'पीक' if lang == 'mr' else 'Crop' }}</th>
+                                <th class="num">MSP</th>
+                                <th class="num">{{ 'एकराला' if lang == 'mr' else '₹/acre' }}</th></tr>
+                        </thead>
+                        <tbody>
+                            {% for row in view.markets %}
+                            <tr {% if row.crop == view.crop %}class="selected"{% endif %}>
+                                <td>{{ row.crop }}</td>
+                                <td class="num">{% if row.price %}₹{{ row.price|int }}<span class="text-muted"> /{{ row.year }}</span>{% else %}—{% endif %}</td>
+                                <td class="num">{% if row.revenue %}₹{{ row.revenue.per_acre|int }}{% else %}—{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="panel">
+                <div class="panel-head">
+                    <h2><i class="bi bi-clipboard2-data"></i> {{ 'या उत्तरामागे माहिती' if lang == 'mr' else 'Data behind this answer' }}</h2>
+                </div>
+                <div class="data-list">
+                    {% for key, label in (FEATURE_LABELS_MR if lang == 'mr' else FEATURE_LABELS).items() %}
+                    <div class="data-row"><span>{{ label }}</span><strong>{{ view.features[key]|round(1) }}</strong></div>
+                    {% endfor %}
+                </div>
+                <div class="small text-muted mt-3">
+                    <strong>{{ 'माती:' if lang == 'mr' else 'Soil:' }}</strong> pH {{ soil.ph }} ({{ soil.ph_source }}),
+                    {% if soil.texture_class %}{{ soil.texture_class }}, {% endif %}
+                    {% if soil.organic_carbon_g_kg %}organic C {{ soil.organic_carbon_g_kg }} g/kg, {% endif %}
+                    N/P/K {% if available.measured %}{{ 'तुमच्या माती चाचणीवरून' if lang == 'mr' else 'from your soil test' }}{% else %}{{ available.source|lower }}{% endif %}.
+                    <br>
+                    <strong>{{ 'हवामान:' if lang == 'mr' else 'Climate:' }}</strong>
+                    {{ climate.temp_c }} °C, {{ climate.humidity_pct }}% humidity,
+                    {{ 'पावसाचा सरासरी' if lang == 'mr' else 'rain normal' }} {{ climate.rainfall_normal_mm or 'n/a' }} mm
+                    {% if climate.rainfall_actual_mm %}({{ climate.rainfall_actual_mm }} mm recent){% endif %}.
+                    {% if climate.rainfall_normal_is_state_average %}<span class="text-warning">({{ 'राज्य सरासरी' if lang == 'mr' else 'state average' }})</span>{% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# ---------------------------------------------------- save #}
+    <div class="save-bar">
+        <h2><i class="bi bi-bookmark-check"></i> {{ 'शेत जतन करा आणि कामे वेळापत्रकात ठेवा' if lang == 'mr' else 'Save this field and schedule the work' }}</h2>
+        <form action="{{ url_for('main.save_farm') }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="lat" value="{{ resolved.lat }}">
+            <input type="hidden" name="lon" value="{{ resolved.lon }}">
+            <input type="hidden" name="district" value="{{ resolved.location.district or '' }}">
+            <input type="hidden" name="state" value="{{ resolved.location.state or '' }}">
+            <input type="hidden" name="month" value="{{ resolved.month }}">
+            <input type="hidden" name="n" value="{{ view.features.N }}">
+            <input type="hidden" name="p" value="{{ view.features.P }}">
+            <input type="hidden" name="k" value="{{ view.features.K }}">
+            <input type="hidden" name="ph" value="{{ view.features.ph }}">
+            <input type="hidden" name="category" value="{{ view.category or '' }}">
+            <input type="hidden" name="water_source" value="{{ view.water_form.source or '' }}">
+            <input type="hidden" name="water_days" value="{{ view.water_form.days if view.water_form.days is not none else '' }}">
+            <input type="hidden" name="water_note" value="{{ request.form.get('water_note') or '' }}">
+
+            <div class="save-grid">
+                <div>
+                    <label class="f-label" for="save-name">{{ 'शेताचे नाव' if lang == 'mr' else 'Farm name' }}</label>
+                    <input type="text" class="inp" id="save-name" name="farm_name" maxlength="120"
+                           value="{{ request.form.get('farm_name') or '' }}" placeholder="{{ 'उदा. उत्तर शेत' if lang == 'mr' else 'e.g. North plot' }}">
+                </div>
+                <div>
+                    <label class="f-label" for="save-area">{{ 'क्षेत्र (एकर)' if lang == 'mr' else 'Size (acres)' }}</label>
+                    <input type="number" step="0.1" min="0" class="inp" id="save-area" name="area_acres"
+                           value="{{ request.form.get('area_acres') or '' }}">
+                </div>
+                <div>
+                    <label class="f-label" for="save-sowing">{{ 'पेरणी दिनांक' if lang == 'mr' else 'Sowing date' }}</label>
+                    <input type="date" class="inp" id="save-sowing" name="sowing_date">
+                </div>
+                <div>
+                    <button type="submit" class="btn-primary-pill block" {% if not current_user.is_authenticated %}disabled{% endif %}>
+                        <i class="bi bi-check2-circle"></i>
+                        {{ 'जतन करा + कामे नियोजित करा' if lang == 'mr' else 'Save + schedule tasks' }}
+                    </button>
+                </div>
+            </div>
+            {% if not current_user.is_authenticated %}
+            <div class="small mt-2" style="color:#bfe9cf;">
+                <a href="{{ url_for('auth.register') }}" style="color:#86efac;font-weight:700;">
+                    {{ 'खाते उघडा' if lang == 'mr' else 'Create an account' }}</a>
+                {{ 'जेणेकरून शेते, खत आणि फवारणी वेळापत्रक जतन होईल.' if lang == 'mr' else 'to keep farms, doses and the spray schedule.' }}
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="result-nav">
+        <a href="{{ url_for('main.recommend_view') }}" class="btn-ghost">
+            <i class="bi bi-arrow-left"></i> {{ 'स्थान किंवा माहिती बदला' if lang == 'mr' else 'Change location or values' }}
+        </a>
+        {% if current_user.is_authenticated %}
+        <a href="{{ url_for('main.farms') }}" class="btn-soft">{{ 'माझी शेते' if lang == 'mr' else 'My farms' }} <i class="bi bi-arrow-right"></i></a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

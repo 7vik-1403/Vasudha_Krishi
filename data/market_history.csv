@@ -1,0 +1,25 @@
+crop,year,msp,unit,source,note
+rice,2022-23,2040,INR/quintal,CACP notified MSP,Common grade
+rice,2023-24,2183,INR/quintal,CACP notified MSP,Common grade
+rice,2024-25,2300,INR/quintal,CACP notified MSP,Common grade; Grade A = 2320
+maize,2022-23,1962,INR/quintal,CACP notified MSP,Kharif
+maize,2023-24,2090,INR/quintal,CACP notified MSP,Kharif
+maize,2024-25,2225,INR/quintal,CACP notified MSP,Kharif; Rabi = 2350
+cotton,2022-23,6080,INR/quintal,CACP notified MSP,Medium staple
+cotton,2023-24,7020,INR/quintal,CACP notified MSP,Medium staple
+cotton,2024-25,7366,INR/quintal,CACP notified MSP,Medium staple; long staple = 7666
+mungbean,2022-23,7275,INR/quintal,CACP notified MSP,Moong
+mungbean,2023-24,8116,INR/quintal,CACP notified MSP,Moong
+mungbean,2024-25,8677,INR/quintal,CACP notified MSP,Moong
+blackgram,2022-23,6950,INR/quintal,CACP notified MSP,Urad
+blackgram,2023-24,6950,INR/quintal,CACP notified MSP,Urad
+blackgram,2024-25,7400,INR/quintal,CACP notified MSP,Urad
+chickpea,2022-23,5440,INR/quintal,CACP notified MSP,Gram
+chickpea,2023-24,5440,INR/quintal,CACP notified MSP,Gram
+chickpea,2024-25,5650,INR/quintal,CACP notified MSP,Gram
+lentil,2022-23,6350,INR/quintal,CACP notified MSP,Masur
+lentil,2023-24,6350,INR/quintal,CACP notified MSP,Masur
+lentil,2024-25,6700,INR/quintal,CACP notified MSP,Masur
+pigeonpeas,2022-23,7196,INR/quintal,CACP notified MSP,Tur / Arhar
+pigeonpeas,2023-24,7196,INR/quintal,CACP notified MSP,Tur / Arhar
+pigeonpeas,2024-25,7550,INR/quintal,CACP notified MSP,Tur / Arhar

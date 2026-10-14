@@ -1,0 +1,414 @@
+{
+  "_meta": {
+    "version": "1.0",
+    "disclaimer_en": "Indicative crop calendar for planning. Always follow your state agriculture department / KVK advisory and the pesticide product label before application.",
+    "disclaimer_mr": "ही नियोजनासाठी अंदाजे दिवसभराची यादी आहे. कीटकनाशक/खत वापरण्यापूर्वी तुमच्या राज्य कृषी विभागाच्या सूचना आणि उत्पादन लेबल पाळा.",
+    "sources": [
+      "ICAR / state agriculture department fertilizer and plant protection guidelines",
+      "Pesticide doses are label-standard rates for India - verify the registered label before use"
+    ],
+    "fertilizer_share_note": "n/p/k are fractions (0-1) of the crop's total nutrient requirement from data/crop_npk_requirements.csv, split across splits."
+  },
+  "rice": {
+    "label_en": "Rice", "label_mr": "तांदूळ", "seasons": ["kharif", "rabi"],
+    "sowing_en": "Jun - Jul (kharif); Dec - Jan (rabi irrigated)", "sowing_mr": "जून - जुलै (खरीप); डिसेंबर - जानेवारी (रबी, सिंचित)",
+    "duration_days": 125,
+    "stages": [
+      {"day": 0, "en": "Transplanting / basal", "mr": "रोपे लावणी व आधार खत"},
+      {"day": 25, "en": "Tillering", "mr": "काही प्रकर"},
+      {"day": 60, "en": "Panicle initiation", "mr": "पान कली टोकावट"},
+      {"day": 90, "en": "Flowering", "mr": "फुले येणे"},
+      {"day": 115, "en": "Maturity / drain", "mr": "पीक पकणे"}
+    ],
+    "irrigation_en": "5 cm standing water till panicle initiation; drain 7 days before harvest",
+    "irrigation_mr": "पान कलीपर्यंत ५ सेमी पाणी ठेवा; कापणीच्या ७ दिवस आधी पाणी सोडा",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.25, "p": 1.0, "k": 0.4},
+      {"day": 35, "en": "Tillering top dress", "mr": "काही प्रकर परवडी", "n": 0.4, "p": 0.0, "k": 0.3},
+      {"day": 65, "en": "Panicle initiation", "mr": "पान कली टोकावट", "n": 0.35, "p": 0.0, "k": 0.3}
+    ],
+    "pests": [
+      {"from": 20, "to": 50, "kind": "insecticide", "en": "Stem borer - deadhearts", "mr": "शंकु किडका - मृत शिरे", "control_en": "Chlorantraniliprole 20% SC @ 60 g/ha, or Phenthoate 50% EC @ 1000 ml/ha; install 5 pheromone traps/ha", "control_mr": "क्लोरांट्रानिलिप्रोल २०% एससी @ ६० ग्रैम/हेक्टर"},
+      {"from": 65, "to": 95, "kind": "insecticide", "en": "Brown planthopper / whitebacked planthopper", "mr": "तपकिरी आणि पांढरी मादी किडके", "control_en": "Thiamethoxam 25% WG @ 100 g/ha or Dinotefuran 20% SG @ 100 g/ha", "control_mr": "थायमेथॉक्साम २५% डब्ल्यूजी @ १०० ग्रैम/हेक्टर"},
+      {"from": 75, "to": 105, "kind": "fungicide", "en": "Blast / bacterial leaf blight", "mr": "कुसळ / बॅक्टेरियल पाने झीज", "control_en": "Tricyclazole 75% WP @ 300 g/ha (blast); Copper oxychloride 50% WP @ 300 g/ha (BLB)", "control_mr": "ट्रायसायक्लॅझोल ७५% डब्ल्यूपी @ ३०० ग्रैम/हेक्टर"}
+    ]
+  },
+  "wheat": {
+    "label_en": "Wheat", "label_mr": "गहू", "seasons": ["rabi"],
+    "sowing_en": "Nov - Dec (rabi)", "sowing_mr": "नोव्हेंबर - डिसेंबर (रबी)",
+    "duration_days": 130,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 25, "en": "Crown root / tillering", "mr": "मुळे व काही प्रकर"},
+      {"day": 55, "en": "Node / boot", "mr": "गांठ पिशवी"},
+      {"day": 85, "en": "Flowering", "mr": "फुले"}
+    ],
+    "irrigation_en": "Critical waters at crown root, 40, 65 and 85 days; last irrigation 15-20 days before harvest",
+    "irrigation_mr": "मुळे, ४०, ६५ आणि ८५ व्या दिवशी सिंचन; कापणीपूर्वी १५-२० दिवस शेवटचे सिंचन",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.6, "p": 1.0, "k": 0.5},
+      {"day": 25, "en": "First N top dress (30-35 DAS)", "mr": "पहिली नत्र परवडी", "n": 0.4, "p": 0.0, "k": 0.5},
+      {"day": 60, "en": "Second N top dress (optional)", "mr": "दुसरी नत्र परवडी", "n": 0.0, "p": 0.0, "k": 0.0}
+    ],
+    "pests": [
+      {"from": 25, "to": 70, "kind": "insecticide", "en": "Aphids", "mr": "आफिड्स", "control_en": "Imidacloprid 17.8% SL @ 500 ml/ha or Thiamethoxam 25% WG @ 80 g/ha", "control_mr": "इमिडाक्लोप्रिड १७.८% एसएल @ ५०० मिली/हेक्टर"},
+      {"from": 60, "to": 110, "kind": "fungicide", "en": "Rust (yellow/brown)", "mr": "गंज रोग", "control_en": "Propiconazole 25% EC @ 1000 ml/ha or Tebuconazole 250 EC @ 1000 ml/ha", "control_mr": "प्रोपिकोनाझोल २५% ईसी @ १००० मिली/हेक्टर"},
+      {"from": 80, "to": 125, "kind": "rodenticide", "en": "Termite risk (light soils)", "mr": "विषाणू/गादी धोका", "control_en": "Chlorpyrifos 20% EC seed treatment @ 30 ml/kg seed", "control_mr": "क्लोरपायरिफॉस २०% ईसी बियाणे उपचार @ ३० मिली/किलो"}
+    ]
+  },
+  "maize": {
+    "label_en": "Maize", "label_mr": "मका", "seasons": ["kharif", "rabi", "zaid"],
+    "sowing_en": "Jun - Jul (kharif); Dec - Jan (rabi); Mar - Apr (zaid)", "sowing_mr": "जून - जुलै; डिसेंबर - जानेवारी; मार्च - एप्रिल",
+    "duration_days": 100,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 30, "en": "Knee / vegetative", "mr": "गुडघा अवस्था"},
+      {"day": 55, "en": "Tasselling", "mr": "मक्या येणे"},
+      {"day": 80, "en": "Silking / grain fill", "mr": "बाया व दाणे रचना"}
+    ],
+    "irrigation_en": "Irrigate at knee stage, tasselling and grain filling - most critical",
+    "irrigation_mr": "गुडघा, मक्या आणि दाणे रचना या अवस्थेत सिंचन अत्यंत आवश्यक",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.4, "p": 1.0, "k": 0.4},
+      {"day": 30, "en": "First N top dress", "mr": "पहिली नत्र परवडी", "n": 0.3, "p": 0.0, "k": 0.3},
+      {"day": 55, "en": "Second N top dress", "mr": "दुसरी नत्र परवडी", "n": 0.3, "p": 0.0, "k": 0.3}
+    ],
+    "pests": [
+      {"from": 25, "to": 75, "kind": "insecticide", "en": "Stem borer / shoot fly", "mr": "शंकु किडका / शूट फ्लाय", "control_en": "Chlorantraniliprole 20% SC @ 60 g/ha; pheromone traps at 5/ha", "control_mr": "क्लोरांट्रानिलिप्रोल २०% एससी @ ६० ग्रैम/हेक्टर"},
+      {"from": 55, "to": 90, "kind": "fungicide", "en": "Downy mildew / leaf blight", "mr": "बोरी आणि पाने झीज", "control_en": "Metalaxyl 8% + Mancozeb 64% WP @ 2 kg/ha", "control_mr": "मेटालॅक्सिल ८% + मँकोजेब ६४% डब्ल्यूपी @ २ किलो/हेक्टर"}
+    ]
+  },
+  "chickpea": {
+    "label_en": "Chickpea", "label_mr": "हरभरा / छोले", "seasons": ["rabi"],
+    "sowing_en": "Oct - Nov (rabi)", "sowing_mr": "ऑक्टोबर - नोव्हेंबर (रबी)",
+    "duration_days": 110,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 40, "en": "Branching", "mr": "काप्या होणे"},
+      {"day": 65, "en": "Flowering", "mr": "फुले"},
+      {"day": 95, "en": "Pod formation", "mr": "शेंगा रचना"}
+    ],
+    "irrigation_en": "Rainfed usually; one irrigation at flowering if available",
+    "irrigation_mr": "प्रामुख्याने पर्जन्यावर; फुलांच्या वेळी एक सिंचन करता येईल",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 1.0, "p": 1.0, "k": 1.0}
+    ],
+    "pests": [
+      {"from": 45, "to": 90, "kind": "insecticide", "en": "Pod borer (Helicoverpa / Maruca)", "mr": "शेंगा फुकणारा किडका", "control_en": "Emamectin benzoate 5% SG @ 160 g/ha or Helicoverpa nucleopolyhedrovirus @ 1.5 L/ha", "control_mr": "इमामेक्टिन बेन्झोएट ५% एसजी @ १६० ग्रैम/हेक्टर"},
+      {"from": 30, "to": 80, "kind": "fungicide", "en": "Wilt / root rot", "mr": "विषाणू / मुळे कुसणे", "control_en": "Trichoderma viride 1.5% WP seed treatment @ 4 g/kg seed; Carbendazim 50% WP @ 2 g/kg seed", "control_mr": "ट्रायकोडर्मा व्हिराईड बियाणे उपचार @ ४ ग्रैम/किलो"}
+    ]
+  },
+  "lentil": {
+    "label_en": "Lentil", "label_mr": "मसूर", "seasons": ["rabi"],
+    "sowing_en": "Oct - Nov (rabi)", "sowing_mr": "ऑक्टोबर - नोव्हेंबर (रबी)",
+    "duration_days": 110,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 40, "en": "Branching", "mr": "काप्या"},
+      {"day": 70, "en": "Flowering", "mr": "फुले"}
+    ],
+    "irrigation_en": "Rainfed; one life irrigation at flowering",
+    "irrigation_mr": "पर्जन्यावर; फुलांच्या वेळी एक सिंचन",
+    "fertilizer": [{"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 1.0, "p": 1.0, "k": 1.0}],
+    "pests": [
+      {"from": 50, "to": 95, "kind": "insecticide", "en": "Pod borer", "mr": "शेंगा फुकणारा किडका", "control_en": "Quinalphos 25% EC @ 1000 ml/ha or Emamectin benzoate 5% SG @ 140 g/ha", "control_mr": "क्विनालफॉस २५% ईसी @ १००० मिली/हेक्टर"},
+      {"from": 35, "to": 70, "kind": "fungicide", "en": "Wilt / leaf spot", "mr": "विषाणू / पाने डाग", "control_en": "Carbendazim 50% WP @ 1 g/kg seed + Mancozeb 75% WP @ 200 g/ha", "control_mr": "कार्बेंडाझिम बियाणे उपचार @ १ ग्रैम/किलो"}
+    ]
+  },
+  "blackgram": {
+    "label_en": "Black gram", "label_mr": "उडद", "seasons": ["kharif", "rabi"],
+    "sowing_en": "Jun - Jul (kharif); Oct - Nov (rabi)", "sowing_mr": "जून - जुलै (खरीप); ऑक्टोबर - नोव्हेंबर (रबी)",
+    "duration_days": 95,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 35, "en": "Branching", "mr": "काप्या"},
+      {"day": 60, "en": "Flowering", "mr": "फुले"}
+    ],
+    "irrigation_en": "Rainfed; irrigate at flowering and pod set",
+    "irrigation_mr": "पर्जन्यावर; फुले व शेंगा रचनेच्या वेळी सिंचन",
+    "fertilizer": [{"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 1.0, "p": 1.0, "k": 1.0}],
+    "pests": [
+      {"from": 40, "to": 85, "kind": "insecticide", "en": "Pod borer / bruchid", "mr": "शेंगा किडका", "control_en": "Cypermethrin 10% EC @ 500 ml/ha; keep grain moisture below 12%", "control_mr": "सायपरमेथ्रिन १०% ईसी @ ५०० मिली/हेक्टर"},
+      {"from": 30, "to": 65, "kind": "fungicide", "en": "Cercospora leaf spot / yellow mosaic virus", "mr": "पाने डाग / पिवळा मोझॅइक", "control_en": "Mancozeb 75% WP @ 200 g/ha; rogue virus plants early", "control_mr": "मँकोजेब ७५% डब्ल्यूपी @ २०० ग्रैम/हेक्टर"}
+    ]
+  },
+  "mungbean": {
+    "label_en": "Green gram", "label_mr": "मूग", "seasons": ["kharif", "zaid", "rabi"],
+    "sowing_en": "Jun - Jul (kharif); Mar - Apr (zaid)", "sowing_mr": "जून - जुलै (खरीप); मार्च - एप्रिल (जायद)",
+    "duration_days": 70,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 25, "en": "Branching", "mr": "काप्या"},
+      {"day": 45, "en": "Flowering", "mr": "फुले"}
+    ],
+    "irrigation_en": "Two irrigations - at branching and flowering",
+    "irrigation_mr": "काप्या आणि फुले या अवस्थेत दोन सिंचने",
+    "fertilizer": [{"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 1.0, "p": 1.0, "k": 1.0}],
+    "pests": [
+      {"from": 30, "to": 65, "kind": "insecticide", "en": "Pod borer", "mr": "शेंगा फुकणारा किडका", "control_en": "Neem seed kernel extract 5% or Quinalphos 25% EC @ 1000 ml/ha", "control_mr": "मीठा लिंबी बियाणे अर्क ५% किंवा क्विनालफॉस २५% ईसी @ १००० मिली/हेक्टर"},
+      {"from": 35, "to": 60, "kind": "fungicide", "en": "Cercospora leaf spot", "mr": "पाने डाग", "control_en": "Chlorothalonil 75% WP @ 160 g/ha", "control_mr": "क्लोरोथॅलोनिल ७५% डब्ल्यूपी @ १६० ग्रैम/हेक्टर"}
+    ]
+  },
+  "pigeonpeas": {
+    "label_en": "Pigeon pea", "label_mr": "तूर / अरहर", "seasons": ["kharif"],
+    "sowing_en": "Jun - Jul (kharif)", "sowing_mr": "जून - जुलै (खरीप)",
+    "duration_days": 165,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 45, "en": "Branching", "mr": "काप्या"},
+      {"day": 90, "en": "Flowering", "mr": "फुले"},
+      {"day": 140, "en": "Pod maturity", "mr": "शेंगा पकणे"}
+    ],
+    "irrigation_en": "Rainfed; irrigate at flowering if monsoon fails",
+    "irrigation_mr": "पर्जन्यावर; पावसाचा टाळा असल्यास फुलांच्या वेळी सिंचन",
+    "fertilizer": [{"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 1.0, "p": 1.0, "k": 1.0}],
+    "pests": [
+      {"from": 70, "to": 140, "kind": "insecticide", "en": "Pod borer (Helicoverpa)", "mr": "शेंगा फुकणारा किडका", "control_en": "Helicoverpa NPV @ 1.5 L/ha + Neem oil 3 ml/L, 2 sprays at 10-day interval", "control_mr": "हेलिकोव्हरपा एनपीव्ही @ १.५ लिटर/हेक्टर"},
+      {"from": 95, "to": 150, "kind": "fungicide", "en": "Fusarium wilt / dry root rot", "mr": "विषाणू कुसणे", "control_en": "Trichoderma harzianum seed treatment @ 4 g/kg; avoid water stagnation", "control_mr": "ट्रायकोडर्मा हार्झियानम बियाणे उपचार @ ४ ग्रैम/किलो"}
+    ]
+  },
+  "mothbeans": {
+    "label_en": "Moth bean", "label_mr": "मठ", "seasons": ["kharif"],
+    "sowing_en": "Jun - Jul (kharif)", "sowing_mr": "जून - जुलै (खरीप)",
+    "duration_days": 80,
+    "stages": [{"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"}, {"day": 40, "en": "Flowering", "mr": "फुले"}],
+    "irrigation_en": "Highly drought tolerant - no irrigation needed in normal monsoon",
+    "irrigation_mr": "अतिशय सुकता सहन करणारे - सामान्य पावसात सिंचन नको",
+    "fertilizer": [{"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 1.0, "p": 1.0, "k": 1.0}],
+    "pests": [
+      {"from": 35, "to": 70, "kind": "insecticide", "en": "Pod borer", "mr": "शेंगा किडका", "control_en": "Neem oil 5 ml/L or Cypermethrin 10% EC @ 400 ml/ha", "control_mr": "मीठा लिंबी तेल ५ मिली/लिटर"}
+    ]
+  },
+  "kidneybeans": {
+    "label_en": "Kidney bean (Rajma)", "label_mr": "राजमा", "seasons": ["kharif"],
+    "sowing_en": "May - Jun (kharif)", "sowing_mr": "मे - जून (खरीप)",
+    "duration_days": 120,
+    "stages": [{"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"}, {"day": 40, "en": "Climbing / branching", "mr": "वाढ"}, {"day": 75, "en": "Flowering", "mr": "फुले"}],
+    "irrigation_en": "Regular moisture; irrigate every 8-10 days in dry spell",
+    "irrigation_mr": "नियमित आर्द्रता; कोरडी ऋतूत ८-१० दिवसांनी सिंचन",
+    "fertilizer": [{"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.5, "p": 1.0, "k": 1.0}, {"day": 45, "en": "Top dress", "mr": "परवडी", "n": 0.5, "p": 0.0, "k": 0.0}],
+    "pests": [
+      {"from": 55, "to": 110, "kind": "insecticide", "en": "Bean fly / pod borer", "mr": "बीन फ्लाय / शेंगा किडका", "control_en": "Dimethoate 30% EC @ 1000 ml/ha or Emamectin benzoate 5% SG @ 140 g/ha", "control_mr": "डाइमेथोएट ३०% ईसी @ १००० मिली/हेक्टर"},
+      {"from": 45, "to": 90, "kind": "fungicide", "en": "Angular leaf spot / anthracnose", "mr": "पाने डाग", "control_en": "Mancozeb 75% WP @ 200 g/ha, 2 sprays at 15-day interval", "control_mr": "मँकोजेब ७५% डब्ल्यूपी @ २०० ग्रैम/हेक्टर"}
+    ]
+  },
+  "cotton": {
+    "label_en": "Cotton", "label_mr": "कापूस", "seasons": ["kharif"],
+    "sowing_en": "Apr - Jun (kharif, long duration May)", "sowing_mr": "एप्रिल - जून (खरीप)",
+    "duration_days": 160,
+    "stages": [
+      {"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"},
+      {"day": 40, "en": "Squaring", "mr": "बुट्टा"},
+      {"day": 70, "en": "Flowering", "mr": "फुले"},
+      {"day": 100, "en": "Boll development", "mr": "कापूस फळे"}
+    ],
+    "irrigation_en": "Critical at squaring, flowering and boll formation - 5-7 day interval",
+    "irrigation_mr": "बुट्टा, फुले व फळे या अवस्थेत ५-७ दिवसांच्या अंतराने सिंचन",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.3, "p": 1.0, "k": 0.33},
+      {"day": 45, "en": "Squaring dose", "mr": "बुट्टा खत", "n": 0.35, "p": 0.0, "k": 0.34},
+      {"day": 75, "en": "Boll dose", "mr": "फळ खत", "n": 0.35, "p": 0.0, "k": 0.33}
+    ],
+    "pests": [
+      {"from": 35, "to": 80, "kind": "insecticide", "en": "American bollworm / pink bollworm", "mr": "अमेरिकन व गुलाबी किडका", "control_en": "Chlorantraniliprole 20% SC @ 60 g/ha + Bt (Helicoverpa NPV) spray; install 5 pheromone traps/ha", "control_mr": "क्लोरांट्रानिलिप्रोल २०% एससी @ ६० ग्रैम/हेक्टर + बीटी स्प्रे"},
+      {"from": 30, "to": 70, "kind": "insecticide", "en": "Jassids / whitefly", "mr": "जासिड्स / व्हाइटफ्लाय", "control_en": "Thiamethoxam 25% WG @ 100 g/ha or Diafenthiuron 50% WP @ 600 g/ha", "control_mr": "थायमेथॉक्साम २५% डब्ल्यूजी @ १०० ग्रैम/हेक्टर"},
+      {"from": 70, "to": 150, "kind": "fungicide", "en": "Alternaria leaf spot / bacterial blight", "mr": "पाने डाग", "control_en": "Copper oxychloride 50% WP @ 300 g/ha; avoid excess irrigation", "control_mr": "कॉपर ऑक्सीक्लोराईड ५०% डब्ल्यूपी @ ३०० ग्रैम/हेक्टर"}
+    ]
+  },
+  "jute": {
+    "label_en": "Jute", "label_mr": "ज्यूट", "seasons": ["kharif"],
+    "sowing_en": "Mar - May (kharif, early)", "sowing_mr": "मार्च - मे (खरीप)",
+    "duration_days": 140,
+    "stages": [{"day": 0, "en": "Sowing / basal", "mr": "पेरणी व आधार खत"}, {"day": 35, "en": "Tillering", "mr": "काही प्रकर"}, {"day": 90, "en": "Fibre elongation", "mr": "सूत वाढ"}],
+    "irrigation_en": "Rainfed but waterlogging tolerant; irrigate in 10-15 day dry gaps",
+    "irrigation_mr": "पर्जन्यावर; १०-१५ दिवस कोरडे असल्यास सिंचन",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.5, "p": 1.0, "k": 0.5},
+      {"day": 40, "en": "Top dress", "mr": "परवडी", "n": 0.5, "p": 0.0, "k": 0.5}
+    ],
+    "pests": [
+      {"from": 30, "to": 100, "kind": "insecticide", "en": "Jute semilooper / hairy caterpillar", "mr": "ज्यूट किडके", "control_en": "Quinalphos 25% EC @ 1250 ml/ha; spray on both leaf surfaces", "control_mr": "क्विनालफॉस २५% ईसी @ १२५० मिली/हेक्टर"},
+      {"from": 55, "to": 120, "kind": "fungicide", "en": "Anthracnose / stem rot", "mr": "करोड / मुंडाई", "control_en": "Mancozeb 75% WP @ 200 g/ha; avoid water stagnation", "control_mr": "मँकोजेब ७५% डब्ल्यूपी @ २०० ग्रैम/हेक्टर"}
+    ]
+  },
+  "coconut": {
+    "label_en": "Coconut", "label_mr": "नारळ", "seasons": ["perennial"],
+    "sowing_en": "Jun - Jul (main); Feb - Mar (summer)", "sowing_mr": "जून - जुलै (मुख्य); फेब्रु - मार्च (उन्हाळा)",
+    "duration_days": 365,
+    "stages": [{"day": 0, "en": "Planting", "mr": "रोपे लावणी"}, {"day": 180, "en": "Establishment", "mr": "रुग्णपण"}, {"day": 730, "en": "Bearing starts", "mr": "फळ येणे सुरू"}],
+    "irrigation_en": "250-300 mm water/leaf/year; mulch basins, irrigate fortnightly in summer",
+    "irrigation_mr": "दर मनाला २५०-३०० मिमी पाणी; उन्हाळ्यात पाकळ्याने सिंचन",
+    "fertilizer": [
+      {"day": 90, "en": "Basal + annual split (quarterly)", "mr": "आधार व त्रैमासिक खत", "n": 1.0, "p": 1.0, "k": 1.0}
+    ],
+    "pests": [
+      {"from": 0, "to": 365, "kind": "insecticide", "en": "Rhinoceros beetle / red palm weevil", "mr": "गैंडस बीटल / लाल हत्ती कीड", "control_en": "Pour Phorate 10% granules 200 g in crown; apply neem cake 5 kg/palm; pheromone traps for weevil", "control_mr": "कोवऱ्यात फोरेट १०% ग्रॅन्युल २०० ग्रैम; गळ्याजवळ खत ५ किलो/मनाला"},
+      {"from": 0, "to": 365, "kind": "fungicide", "en": "Koleroga / stem bleeding", "mr": "गळगळी रोग", "control_en": "Bordeaux mixture 1% or Copper oxychloride 50% WP @ 3 g/L on affected bunches; improve drainage", "control_mr": "बॉर्डो मिश्रण १% छिडकाव"}
+    ]
+  },
+  "coffee": {
+    "label_en": "Coffee", "label_mr": "कॉफी", "seasons": ["perennial"],
+    "sowing_en": "Jun - Jul under shade (main planting)", "sowing_mr": "जून - जुलै (छत्रीखाली रोपे)",
+    "duration_days": 365,
+    "stages": [{"day": 0, "en": "Planting", "mr": "रोपे लावणी"}, {"day": 1095, "en": "Bearing (3 yrs)", "mr": "फळ येणे"}, {"day": 330, "en": "Flowering (next cycle)", "mr": "फुले"}],
+    "irrigation_en": "Shade-grown rainfed; shade management matters more than irrigation",
+    "irrigation_mr": "छत्रीखाली पर्जन्यावर; छत्री व्यवस्थापन महत्त्वाचे",
+    "fertilizer": [
+      {"day": 60, "en": "First split (pre-monsoon)", "mr": "पहिला भाग", "n": 0.5, "p": 1.0, "k": 0.5},
+      {"day": 240, "en": "Second split (post-monsoon)", "mr": "दुसरा भाग", "n": 0.5, "p": 0.0, "k": 0.5}
+    ],
+    "pests": [
+      {"from": 0, "to": 365, "kind": "insecticide", "en": "Coffee berry borer", "mr": "कॉफी बेरी बोरर", "control_en": "Collect and destroy infested berries; apply Phorate 10% G @ 200 g/plant basin in Apr-May; Beauveria bassiana", "control_mr": "संक्रमित फळे गोळा करून नष्ट करा; फोरेट १०% ग्रॅन्युल @ २०० ग्रैम/मनाला"},
+      {"from": 180, "to": 365, "kind": "fungicide", "en": "Black rot / stem rust", "mr": "काळा कुसळ", "control_en": "Copper oxychloride 50% WP @ 2 g/L, 3 sprays (pre-flowering, post-flowering, berry set)", "control_mr": "कॉपर ऑक्सीक्लोराईड २ ग्रैम/लिटर तीन छिडकाव"}
+    ]
+  },
+  "apple": {
+    "label_en": "Apple", "label_mr": "सफरचंद", "seasons": ["perennial"],
+    "sowing_en": "Dec - Feb (dormant); Nov (leafless)", "sowing_mr": "डिसेंबर - फेब्रुवारी (निष्क्रिय काळ)",
+    "duration_days": 365,
+    "stages": [{"day": 90, "en": "Bud break", "mr": "पोकळी सुटणे"}, {"day": 120, "en": "Flowering", "mr": "फुले"}, {"day": 240, "en": "Fruit set", "mr": "फळ रचना"}],
+    "irrigation_en": "Drip in summer; 4-6 irrigations of 50-60 mm equivalent",
+    "irrigation_mr": "उन्हाळ्यात ठीप सिंचन; ४-६ सिंचने",
+    "fertilizer": [
+      {"day": 30, "en": "Pre-bloom nitrogen", "mr": "फुलणापूर्वी नत्र", "n": 0.4, "p": 1.0, "k": 0.5},
+      {"day": 150, "en": "Post-harvest / summer", "mr": "कापणीनंतर", "n": 0.6, "p": 0.0, "k": 0.5}
+    ],
+    "pests": [
+      {"from": 90, "to": 140, "kind": "insecticide", "en": "Codling moth / aphids", "mr": "कोडलिंग मॉथ / आफिड्स", "control_en": "Spray Phosmet/Dimethoate 1000 ml/ha at petal fall; sticky bands on trunks", "control_mr": "डाइमेथोएट १००० मिली/हेक्टर; झाडांवर चिकट पट्ट्या"},
+      {"from": 90, "to": 260, "kind": "fungicide", "en": "Scab / powdery mildew", "mr": "कास आणि भुसी आजार", "control_en": "Carbendazim 50% WP @ 1 g/L or Sulphur 80% WP @ 3 g/L (before 30°C)", "control_mr": "कार्बेंडाझिम १ ग्रैम/लिटर किंवा गंधक ३ ग्रैम/लिटर"}
+    ]
+  },
+  "banana": {
+    "label_en": "Banana", "label_mr": "केळं", "seasons": ["perennial", "kharif"],
+    "sowing_en": "Feb - Apr and Jun - Jul", "sowing_mr": "फेब्रु - एप्रिल व जून - जुलै",
+    "duration_days": 300,
+    "stages": [{"day": 0, "en": "Planting", "mr": "रोपे लावणी"}, {"day": 60, "en": "Vegetative", "mr": "वाढ"}, {"day": 150, "en": "Bunch initiation", "mr": "चेंडू टोकावट"}, {"day": 270, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Continuous moisture - drip 25-30 mm/week; never water stress",
+    "irrigation_mr": "सतत आर्द्रता - ठीप सिंचन २५-३० मिमी/आठवडा",
+    "fertilizer": [
+      {"day": 30, "en": "Basal 1/3", "mr": "आधार भाग", "n": 0.33, "p": 1.0, "k": 0.33},
+      {"day": 90, "en": "First top dress", "mr": "पहिली परवडी", "n": 0.33, "p": 0.0, "k": 0.34},
+      {"day": 180, "en": "Second top dress", "mr": "दुसरी परवडी", "n": 0.34, "p": 0.0, "k": 0.33}
+    ],
+    "pests": [
+      {"from": 0, "to": 300, "kind": "insecticide", "en": "Banana pseudostem weevil / rhizome weevil", "mr": "केळी किडका", "control_en": "Carbofuran 3% G @ 30 g/plant at planting; destroy weevil with 0.1% Monocrotophos in corm", "control_mr": "कार्बोफ्युरान ३% ग्रॅन्युल @ ३० ग्रैम/रोपे"},
+      {"from": 140, "to": 300, "kind": "fungicide", "en": "Sigatoka / Panama wilt", "mr": "सिगाटोका पाने झीज", "control_en": "Mancozeb 75% WP @ 2 g/L, 4-6 sprays at 14-day interval; remove infected leaves", "control_mr": "मँकोजेब २ ग्रैम/लिटर, १४ दिवसांच्या अंतराने"}
+    ]
+  },
+  "grapes": {
+    "label_en": "Grapes", "label_mr": "द्राक्ष", "seasons": ["perennial"],
+    "sowing_en": "Dec - Feb (dormant planting)", "sowing_mr": "डिसेंबर - फेब्रुवारी",
+    "duration_days": 365,
+    "stages": [{"day": 45, "en": "Bud break", "mr": "पोकळी"}, {"day": 75, "en": "Flowering", "mr": "फुले"}, {"day": 110, "en": "Berry set", "mr": "द्राक्ष रचना"}, {"day": 165, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Deficit irrigation at ripening to improve TSS; drip preferred",
+    "irrigation_mr": "पिकण्याच्या वेळी कमी सिंचन; ठीप सिंचन चांगले",
+    "fertilizer": [
+      {"day": 30, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.5, "p": 1.0, "k": 0.5},
+      {"day": 90, "en": "Berry growth dose", "mr": "द्राक्ष वाढ खत", "n": 0.3, "p": 0.0, "k": 0.3},
+      {"day": 150, "en": "Ripening dose", "mr": "पिकणी खत", "n": 0.2, "p": 0.0, "k": 0.2}
+    ],
+    "pests": [
+      {"from": 45, "to": 165, "kind": "insecticide", "en": "Thrips / berry moth", "mr": "थ्रिप्स / द्राक्ष मॉथ", "control_en": "Spiromesifen 22.9% SC @ 1000 ml/ha or Diafenthiuron 50% WP @ 600 g/ha", "control_mr": "स्पायरोमेसिफेन २२.९% एससी @ १००० मिली/हेक्टर"},
+      {"from": 60, "to": 165, "kind": "fungicide", "en": "Downy mildew / powdery mildew", "mr": "भुसी आजार", "control_en": "Metalaxyl 8% + Mancozeb 64% WP @ 2 kg/ha (downy); Sulphur 80% WP @ 3 g/L (powdery)", "control_mr": "मेटालॅक्सिल + मँकोजेब @ २ किलो/हेक्टर; गंधक ३ ग्रैम/लिटर"}
+    ]
+  },
+  "mango": {
+    "label_en": "Mango", "label_mr": "आंबा", "seasons": ["perennial"],
+    "sowing_en": "Jun - Jul (main); Feb - Mar (summer with irrigation)", "sowing_mr": "जून - जुलै (मुख्य); फेब्रु - मार्च",
+    "duration_days": 365,
+    "stages": [{"day": 60, "en": "Flush", "mr": "नवीन पाने"}, {"day": 120, "en": "Flowering", "mr": "फुले"}, {"day": 240, "en": "Fruit development", "mr": "फळ वाढ"}, {"day": 300, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "One pre-flowering irrigation is critical; 4-6 irrigations/year",
+    "irrigation_mr": "फुलण्यापूर्वी एक सिंचन अत्यंत आवश्यक; वर्षातून ४-६ सिंचने",
+    "fertilizer": [
+      {"day": 30, "en": "Pre-monsoon / basal (N-P-K)", "mr": "पावसापूर्वी आधार खत", "n": 0.5, "p": 1.0, "k": 0.5},
+      {"day": 200, "en": "Post-harvest", "mr": "कापणीनंतर", "n": 0.5, "p": 0.0, "k": 0.5}
+    ],
+    "pests": [
+      {"from": 60, "to": 150, "kind": "insecticide", "en": "Hopper / mealybug / fruit fly", "mr": "हॉपर / मेलीबग / फळ माय", "control_en": "Dimethoate 30% EC @ 1000 ml/ha at flower flush; methyl eugenol traps for fruit fly; neem cake in basins", "control_mr": "डाइमेथोएट ३०% ईसी @ १००० मिली/हेक्टर; मीथाईल युजेनॉल जाळी"},
+      {"from": 90, "to": 300, "kind": "fungicide", "en": "Powdery mildew / anthracnose (die-back)", "mr": "भुसी आजार", "control_en": "Sulphur 80% WP @ 3 g/L at flower stage; Copper oxychloride 50% WP @ 3 g/L for die-back", "control_mr": "गंधक ३ ग्रैम/लिटर (फुले); कॉपर ऑक्सीक्लोराईड ३ ग्रैम/लिटर"}
+    ]
+  },
+  "muskmelon": {
+    "label_en": "Muskmelon", "label_mr": "खरबूजा", "seasons": ["zaid", "kharif"],
+    "sowing_en": "Feb - Mar (zaid); Jun - Jul (kharif)", "sowing_mr": "फेब्रु - मार्च (जायद); जून - जुलै (खरीप)",
+    "duration_days": 100,
+    "stages": [{"day": 0, "en": "Sowing", "mr": "पेरणी"}, {"day": 30, "en": "Vine spread", "mr": "वाइन वाढ"}, {"day": 55, "en": "Flowering", "mr": "फुले"}, {"day": 85, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Drip; moderate water - avoid waterlogging at ripening",
+    "irrigation_mr": "ठीप सिंचन; पिकण्याच्या वेळी पाणी कमी",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.33, "p": 1.0, "k": 0.4},
+      {"day": 35, "en": "Vine spread dose", "mr": "वाइन वाढ खत", "n": 0.34, "p": 0.0, "k": 0.3},
+      {"day": 60, "en": "Fruit development dose", "mr": "फळ वाढ खत", "n": 0.33, "p": 0.0, "k": 0.3}
+    ],
+    "pests": [
+      {"from": 30, "to": 95, "kind": "insecticide", "en": "Fruit fly / leaf miner", "mr": "फळ माय / लीफ मायनर", "control_en": "Methyl eugenol traps (5/ha); Cypermethrin 10% EC @ 500 ml/ha", "control_mr": "मीथाईल युजेनॉल जाळी ५/हेक्टर"},
+      {"from": 35, "to": 95, "kind": "fungicide", "en": "Downy mildew / powdery mildew", "mr": "भुसी आजार", "control_en": "Metalaxyl + Mancozeb WP @ 2 kg/ha; Sulphur 80% WP @ 2.5 g/L", "control_mr": "मेटालॅक्सिल + मँकोजेब @ २ किलो/हेक्टर"}
+    ]
+  },
+  "orange": {
+    "label_en": "Orange", "label_mr": "संत्री", "seasons": ["perennial"],
+    "sowing_en": "Jun - Jul (main); Feb - Mar (summer)", "sowing_mr": "जून - जुलै (मुख्य); फेब्रु - मार्च",
+    "duration_days": 365,
+    "stages": [{"day": 60, "en": "Flush", "mr": "नवीन पाने"}, {"day": 150, "en": "Flowering", "mr": "फुले"}, {"day": 300, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Regular moisture; 8-10 irrigations/year for bearing trees",
+    "irrigation_mr": "नियमित आर्द्रता; वर्षात८-१० सिंचने",
+    "fertilizer": [
+      {"day": 30, "en": "Pre-monsoon (N-P-K)", "mr": "पावसापूर्वी खत", "n": 0.5, "p": 1.0, "k": 0.5},
+      {"day": 200, "en": "Post-harvest", "mr": "कापणीनंतर", "n": 0.5, "p": 0.0, "k": 0.5}
+    ],
+    "pests": [
+      {"from": 60, "to": 300, "kind": "insecticide", "en": "Citrus psylla / leaf miner / scale", "mr": "संत्री प्सिला / स्केल", "control_en": "Imidacloprid 17.8% SL @ 1000 ml/ha (psylla); Neem oil 5 ml/L", "control_mr": "इमिडाक्लोप्रिड १७.८% एसएल @ १००० मिली/हेक्टर"},
+      {"from": 90, "to": 300, "kind": "fungicide", "en": "Citrus canker / greening (HLB)", "mr": "कॅन्कर / म्हणी आजार", "control_en": "Copper oxychloride 50% WP @ 3 g/L; control psyllid vector; remove infected trees", "control_mr": "कॉपर ऑक्सीक्लोराईड ३ ग्रैम/लिटर"}
+    ]
+  },
+  "papaya": {
+    "label_en": "Papaya", "label_mr": "पपई", "seasons": ["perennial", "kharif"],
+    "sowing_en": "Feb - Apr (main)", "sowing_mr": "फेब्रु - एप्रिल",
+    "duration_days": 365,
+    "stages": [{"day": 0, "en": "Sowing / transplanting", "mr": "पेरणी"}, {"day": 90, "en": "Vegetative", "mr": "वाढ"}, {"day": 150, "en": "First flower", "mr": "पहिले फूल"}, {"day": 300, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Drip every 3-4 days; avoid water stress during fruiting",
+    "irrigation_mr": "दर ३-४ दिवसांनी ठीप सिंचन; फळ येताना पाण्याचा त्रास नको",
+    "fertilizer": [
+      {"day": 30, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.3, "p": 1.0, "k": 0.33},
+      {"day": 120, "en": "First top dress", "mr": "पहिली परवडी", "n": 0.3, "p": 0.0, "k": 0.33},
+      {"day": 240, "en": "Second top dress", "mr": "दुसरी परवडी", "n": 0.4, "p": 0.0, "k": 0.34}
+    ],
+    "pests": [
+      {"from": 60, "to": 365, "kind": "insecticide", "en": "Fruit fly / aphids", "mr": "फळ माय / आफिड्स", "control_en": "Methyl eugenol traps 5/ha; Imidacloprid 17.8% SL @ 500 ml/ha for aphids", "control_mr": "मीथाईल युजेनॉल जाळी ५/हेक्टर"},
+      {"from": 90, "to": 365, "kind": "fungicide", "en": "Anthracnose / powdery mildew", "mr": "करोड / भुसी आजार", "control_en": "Mancozeb 75% WP @ 2 g/L; avoid overhead irrigation on leaves", "control_mr": "मँकोजेब २ ग्रैम/लिटर"}
+    ]
+  },
+  "pomegranate": {
+    "label_en": "Pomegranate", "label_mr": "डाळिंब", "seasons": ["perennial"],
+    "sowing_en": "Jun - Jul (main); Feb - Mar (summer)", "sowing_mr": "जून - जुलै (मुख्य); फेब्रु - मार्च",
+    "duration_days": 365,
+    "stages": [{"day": 60, "en": "Vegetative", "mr": "वाढ"}, {"day": 150, "en": "Flowering", "mr": "फुले"}, {"day": 300, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Drip; deficit irrigation at ripening improves colour",
+    "irrigation_mr": "ठीप सिंचन; पिकण्याच्या वेळी कमी पाण्याने रंग चांगला",
+    "fertilizer": [
+      {"day": 30, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.5, "p": 1.0, "k": 0.5},
+      {"day": 180, "en": "Post-harvest", "mr": "कापणीनंतर", "n": 0.5, "p": 0.0, "k": 0.5}
+    ],
+    "pests": [
+      {"from": 90, "to": 365, "kind": "insecticide", "en": "Fruit borer / aphid / mealybug", "mr": "फळ फुकणारा किडका", "control_en": "Chlorantraniliprole 20% SC @ 60 g/ha for borers; Neem oil 5 ml/L for aphids/mealybug", "control_mr": "क्लोरांट्रानिलिप्रोल २०% एससी @ ६० ग्रैम/हेक्टर"},
+      {"from": 100, "to": 365, "kind": "fungicide", "en": "Bacterial blight (most serious)", "mr": "बॅक्टेरियल ब्लाइट", "control_en": "Copper oxychloride 50% WP @ 3 g/L + Streptocycline 0.1 g/L; prune and burn infected twigs; avoid overhead irrigation", "control_mr": "कॉपर ऑक्सीक्लोराईड ३ ग्रैम/लिटर + स्ट्रेप्टोसायक्लिन ०.१ ग्रैम/लिटर"}
+    ]
+  },
+  "watermelon": {
+    "label_en": "Watermelon", "label_mr": "तरबूज", "seasons": ["zaid", "kharif"],
+    "sowing_en": "Feb - Mar (zaid); Jun (kharif)", "sowing_mr": "फेब्रु - मार्च (जायद); जून (खरीप)",
+    "duration_days": 95,
+    "stages": [{"day": 0, "en": "Sowing", "mr": "पेरणी"}, {"day": 35, "en": "Vine spread", "mr": "वाइन वाढ"}, {"day": 55, "en": "Flowering", "mr": "फुले"}, {"day": 85, "en": "Harvest", "mr": "कापणी"}],
+    "irrigation_en": "Drip; reduce water in last 10 days for better sweetness",
+    "irrigation_mr": "ठीप सिंचन; शेवटच्या १० दिवसांत पाणी कमी",
+    "fertilizer": [
+      {"day": 0, "en": "Basal (N-P-K)", "mr": "आधार खत", "n": 0.34, "p": 1.0, "k": 0.4},
+      {"day": 35, "en": "Vine spread dose", "mr": "वाइन वाढ खत", "n": 0.33, "p": 0.0, "k": 0.3},
+      {"day": 60, "en": "Fruit development dose", "mr": "फळ वाढ खत", "n": 0.33, "p": 0.0, "k": 0.3}
+    ],
+    "pests": [
+      {"from": 30, "to": 90, "kind": "insecticide", "en": "Fruit fly / aphids", "mr": "फळ माय / आफिड्स", "control_en": "Methyl eugenol traps 5/ha; Thiamethoxam 25% WG @ 100 g/ha for aphids", "control_mr": "मीथाईल युजेनॉल जाळी ५/हेक्टर"},
+      {"from": 35, "to": 95, "kind": "fungicide", "en": "Anthracnose / Fusarium wilt", "mr": "करोड / विषाणू कुसणे", "control_en": "Carbendazim 1 g/L drench + crop rotation with non-cucurbit crops", "control_mr": "कार्बेंडाझिम १ ग्रैम/लिटर; दुसऱ्या पिकाशी फेरबदल"}
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "_meta": {
+    "note": "Crop groups used to filter recommendations. 'vegetables' is handled by the rule engine in cropapp/services/vegetables.py because vegetables are not in the ML training set.",
+    "updated": "2026-10-09"
+  },
+  "cereals": {
+    "label_en": "Grains & cereals",
+    "label_mr": "धान्य व कणीक पिके",
+    "icon": "bi-grid-3x3-gap",
+    "crops": ["rice", "maize"]
+  },
+  "pulses": {
+    "label_en": "Pulses & legumes",
+    "label_mr": "डाळी व काठीची पिके",
+    "icon": "bi-circle-half",
+    "crops": ["chickpea", "lentil", "blackgram", "mungbean", "pigeonpeas", "mothbeans", "kidneybeans"]
+  },
+  "fruits": {
+    "label_en": "Fruits",
+    "label_mr": "फळे",
+    "icon": "bi-apple",
+    "crops": ["apple", "banana", "grapes", "mango", "muskmelon", "orange", "papaya", "pomegranate", "watermelon"]
+  },
+  "cash": {
+    "label_en": "Cash & plantation crops",
+    "label_mr": "रोख व बागडी पिके",
+    "icon": "bi-cash-coin",
+    "crops": ["cotton", "jute", "coffee", "coconut"]
+  },
+  "vegetables": {
+    "label_en": "Vegetables",
+    "label_mr": "भाजीपाला",
+    "icon": "bi-flower2",
+    "crops": []
+  }
+}

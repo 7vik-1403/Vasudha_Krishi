@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% block title %}Vasudha Krishi - log in{% endblock %}
+
+{% block body %}
+<section class="hero">
+    <div class="container-xl hero-grid">
+        <div class="hero-copy">
+            <div class="hero-kicker"><i class="bi bi-flower2"></i> माझी जमीन, माझा आराखडा</div>
+            <h1>{{ 'हंगामाचे नियोजन' if lang == 'mr' else 'Plan the season on' }} <span class="hero-accent">{{ 'तुमच्या' if lang == 'mr' else 'your' }}</span> {{ 'शेतासाठी करा - सरासरीवर नाही.' if lang == 'mr' else 'field - not on an average.' }}</h1>
+            <p class="hero-lead">
+                {{ 'वसुधा कृषी मॅपवर टाकलेल्या तंतोतंत ठिकाणाची माती व हवामान वाचते, तुमच्याकडे खरे किती पाणी आहे ते विचारते, मागील वर्षाचे दर तपासते आणि खत डोस व कीटकनाशक कॅलेंडरसह पीक आराखडा देते.'
+                   if lang == 'mr' else
+                   'Vasudha Krishi reads the soil and climate of the exact point you drop on the map, asks how much water you actually have, checks last year\u2019s prices, and hands you a crop plan with fertilizer doses and a pesticide calendar you can tick off.' }}
+            </p>
+
+            <div class="hero-points">
+                <div class="point"><i class="bi bi-pin-map-fill"></i><span>{{ 'तुमचा प्लॉट पिन करा - त्या बिंदूचा माती pH, पोत, N-P-K व पाऊस' if lang == 'mr' else 'Pin your plot - soil pH, texture, N-P-K and rainfall for that point' }}</span></div>
+                <div class="point"><i class="bi bi-droplet-half"></i><span>{{ 'तुम्ही सांगितलेले पाणी, पावसाचा अंदाज नाही - पाऊस, विहीर, कालवा किंवा ठिबक' if lang == 'mr' else 'Water you tell us, not rainfall guesses - rain-fed, well, canal or drip' }}</span></div>
+                <div class="point"><i class="bi bi-graph-up-arrow"></i><span>{{ 'पेरणीपूर्वी मागील वर्षाचा हमीभाव, दर कल व एकरी उत्पन्न' if lang == 'mr' else 'Last year\u2019s MSP, price trend and revenue per acre before you sow' }}</span></div>
+                <div class="point"><i class="bi bi-calendar2-week"></i><span>{{ 'खत, फवारणी व सिंचनाची कामे एकाच शेत कॅलेंडरवर' if lang == 'mr' else 'Fertilizer, spray and irrigation tasks on one farm calendar' }}</span></div>
+            </div>
+
+            <div class="hero-stats">
+                <div class="hstat"><strong>22</strong><span>{{ 'मॉडेलमधील पिके' if lang == 'mr' else 'crops in the model' }}</span></div>
+                <div class="hstat"><strong>5</strong><span>{{ 'पीक गट' if lang == 'mr' else 'crop groups to pick from' }}</span></div>
+                <div class="hstat"><strong>EN / मरा</strong><span>{{ 'संपूर्ण इंटरफेस' if lang == 'mr' else 'full interface' }}</span></div>
+            </div>
+        </div>
+
+        <div class="hero-auth">
+            <div class="auth-card auth-tabs-card">
+                <div class="auth-tabs" role="tablist">
+                    <button type="button" class="auth-tab active" data-auth-tab="login" role="tab" aria-selected="true">
+                        {{ 'लॉग इन' if lang == 'mr' else 'Log in' }}
+                    </button>
+                    <button type="button" class="auth-tab" data-auth-tab="register" role="tab" aria-selected="false">
+                        {{ 'खाते उघडा' if lang == 'mr' else 'Sign up' }}
+                    </button>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% for category, message in messages %}
+                        <div class="flash flash-{{ category }}"><i class="bi bi-info-circle"></i><span>{{ message }}</span></div>
+                    {% endfor %}
+                {% endwith %}
+
+                <div class="auth-tab-panel active" id="panel-login" role="tabpanel">
+                    <form action="{{ url_for('auth.login') }}" method="post" class="auth-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <label class="field-label" for="login-email">Email</label>
+                        <div class="input-pill"><i class="bi bi-envelope"></i>
+                            <input id="login-email" type="email" name="email" required autofocus placeholder="you@example.com">
+                        </div>
+
+                        <label class="field-label" for="login-password">{{ 'पासवर्ड' if lang == 'mr' else 'Password' }}</label>
+                        <div class="input-pill"><i class="bi bi-lock"></i>
+                            <input id="login-password" type="password" name="password" required placeholder="{{ 'तुमचा पासवर्ड' if lang == 'mr' else 'Your password' }}">
+                        </div>
+
+                        <label class="check-line">
+                            <input type="checkbox" name="remember" value="1"> {{ 'मला लॉग इन ठेवा' if lang == 'mr' else 'Keep me signed in' }}
+                        </label>
+
+                        <button class="btn-primary-pill block" type="submit">
+                            {{ 'लॉग इन' if lang == 'mr' else 'Log in' }} <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="auth-tab-panel" id="panel-register" role="tabpanel" hidden>
+                    <form action="{{ url_for('auth.register') }}" method="post" class="auth-form">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <label class="field-label" for="signup-name">{{ 'तुमचे नाव' if lang == 'mr' else 'Your name' }}</label>
+                        <div class="input-pill"><i class="bi bi-person"></i>
+                            <input id="signup-name" type="text" name="name" maxlength="120" required placeholder="{{ 'उदा. रामदास पाटील' if lang == 'mr' else 'e.g. Ramdas Patil' }}">
+                        </div>
+
+                        <label class="field-label" for="signup-email">Email</label>
+                        <div class="input-pill"><i class="bi bi-envelope"></i>
+                            <input id="signup-email" type="email" name="email" required placeholder="you@example.com">
+                        </div>
+
+                        <div class="grid-2">
+                            <div>
+                                <label class="field-label" for="signup-password">{{ 'पासवर्ड' if lang == 'mr' else 'Password' }}</label>
+                                <div class="input-pill"><i class="bi bi-lock"></i>
+                                    <input id="signup-password" type="password" name="password" minlength="6" required placeholder="{{ '६+ अक्षरे' if lang == 'mr' else '6+ characters' }}">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="field-label" for="signup-confirm">{{ 'पुन्हा टाका' if lang == 'mr' else 'Repeat password' }}</label>
+                                <div class="input-pill"><i class="bi bi-lock-fill"></i>
+                                    <input id="signup-confirm" type="password" name="confirm" minlength="6" required placeholder="6+ characters">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary-pill block" type="submit" style="margin-top:16px;">
+                            {{ 'मोफत खाते उघडा' if lang == 'mr' else 'Create free account' }} <i class="bi bi-arrow-right"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="feature-band">
+    <div class="container-xl feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-layers-half"></i></div>
+            <h3>{{ 'स्थान-आधारित माहिती' if lang == 'mr' else 'Location-first data' }}</h3>
+            <p>{{ 'माती pH व पोतासाठी SoilGrids २५० मी, N-P-K साठी तुमचे Soil Health Card, तापमानासाठी Open-Meteo आणि पावसासाठी IMD मासिक सरासरी.'
+                   if lang == 'mr' else
+                   'SoilGrids 250 m for pH and texture, your Soil Health Card for N-P-K, Open-Meteo for temperature and IMD monthly normals for rainfall.' }}</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon alt"><i class="bi bi-water"></i></div>
+            <h3>{{ 'पाण्याची जाणीव असलेले आराखडे' if lang == 'mr' else 'Water-aware plans' }}</h3>
+            <p>{{ 'पाऊस हा हवामान सरासरी आहे, तुमचा पाणीपुरवठा नाही. स्रोत व आठवड्यातील दिवस सांगा - डोस, पिके व सिंचनाची कामे त्यानुसार बदलतात.'
+                   if lang == 'mr' else
+                   'Rainfall is a climate average, not your water supply. Tell us the source and days per week - doses, crops and irrigation tasks adjust to it.' }}</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon"><i class="bi bi-currency-rupee"></i></div>
+            <h3>{{ 'पेरणीपूर्वी बाजार' if lang == 'mr' else 'Market before you sow' }}</h3>
+            <p>{{ 'प्रत्येक संभाव्य पिकासाठी हमीभाव, मागील वर्षाशी तुलना, दर कल व एकरी अंदाजे एकूण मूल्य.'
+                   if lang == 'mr' else
+                   'Notified MSP with last-year comparison, trend and a rough gross value per acre for every candidate crop.' }}</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon alt"><i class="bi bi-chat-dots"></i></div>
+            <h3>{{ 'सल्लागार सेवा' if lang == 'mr' else 'Advisor on call' }}</h3>
+            <p>{{ 'डोस व फवारणीच्या वेळेसाठी इंग्रजी किंवा मराठीत Gemini ला विचारा - उत्तरे व कामे तुमच्या शेत कॅलेंडरवर येतात.'
+                   if lang == 'mr' else
+                   'Ask Gemini in English or Marathi for doses and spray timing - its answers and tasks land on your farm\u2019s calendar.' }}</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var tabs = document.querySelectorAll('[data-auth-tab]');
+        tabs.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                var target = btn.getAttribute('data-auth-tab');
+                document.querySelectorAll('[data-auth-tab]').forEach(function (b) {
+                    var active = b.getAttribute('data-auth-tab') === target;
+                    b.classList.toggle('active', active);
+                    b.setAttribute('aria-selected', active ? 'true' : 'false');
+                });
+                document.querySelectorAll('.auth-tab-panel').forEach(function (panel) {
+                    var show = panel.id === 'panel-' + target;
+                    panel.classList.toggle('active', show);
+                    panel.hidden = !show;
+                });
+                var first = document.querySelector('#panel-' + target + ' input');
+                if (first) first.focus();
+            });
+        });
+    });
+</script>
+{% endblock %}

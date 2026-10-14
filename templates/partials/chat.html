@@ -1,0 +1,36 @@
+<button type="button" class="chat-fab" id="chat-toggle" aria-label="{{ 'पीक सल्लागार चॅट उघडा' if session.get('language') == 'mr' else 'Open crop advisor chat' }}">
+    <i class="bi bi-chat-dots-fill"></i>
+</button>
+
+<div class="chat-panel" id="chat-panel" aria-hidden="true">
+    <div class="chat-header">
+        <div>
+            <div class="fw-semibold">{{ 'वसुधा सल्लागार' if session.get('language') == 'mr' else 'Vasudha Advisor' }}</div>
+            <div class="chat-sub">Gemini &middot; {{ 'मराठी' if session.get('language') == 'mr' else 'English' }}</div>
+        </div>
+        <button type="button" class="chat-close-btn" id="chat-close" aria-label="{{ 'चॅट बंद करा' if session.get('language') == 'mr' else 'Close chat' }}">
+            <i class="bi bi-x-lg"></i>
+        </button>
+    </div>
+
+    <div class="chat-context d-none" id="chat-context">
+        <i class="bi bi-seedling"></i> <span id="chat-context-name"></span>
+    </div>
+
+    <div class="chat-messages" id="chat-messages">
+        <div class="chat-msg bot">
+            {{ 'नमस्कार! तुमच्या शेतासाठी खत डोस, पेरणी वेळ, कीड किंवा सिंचनाबद्दल विचारा.' if session.get('language') == 'mr' else 'Namaste! Ask me about doses, sowing time, pests or irrigation for your fields.' }}
+            <span class="chat-hint">{{ 'उदा.: "पुढील महिन्यात माझ्या भात शेतासाठी फवारणी वेळापत्रक"' if session.get('language') == 'mr' else 'Example: "spray schedule for my rice farm next month"' }}</span>
+        </div>
+    </div>
+
+    <form id="chat-form" class="chat-input-row">
+        <input type="hidden" id="chat-csrf" value="{{ csrf_token() }}">
+        <input type="text" id="chat-input" class="inp" maxlength="4000"
+               placeholder="{{ 'प्रश्न विचारा...' if session.get('language') == 'mr' else 'Ask about fertilizer, pests, irrigation...' }}"
+               autocomplete="off">
+        <button type="submit" class="chat-send-btn" id="chat-send" title="{{ 'पाठवा' if session.get('language') == 'mr' else 'Send' }}">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    </form>
+</div>

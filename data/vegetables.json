@@ -1,0 +1,293 @@
+{
+  "_meta": {
+    "note": "Vegetable advisory for the rule engine. Vegetables are not part of the ML training data (22 crops), so suggestions here are rule-based: sowing window + temperature fit + water availability. NPK rates are indicative extension values - confirm with your local KVK.",
+    "updated": "2026-10-09"
+  },
+  "tomato": {
+    "en": "Tomato", "mr": "टोमॅटो",
+    "sowing_months": [6, 7, 10, 11],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 110, "temp_min": 15, "temp_max": 30,
+    "spacing": "60 x 45 cm",
+    "npk_kg_ha": { "n": 110, "p": 50, "k": 50 },
+    "pests": [
+      { "day": 45, "en": "Fruit borer / early blight", "mr": "फळ किडा / प्रारंभिक ब्लाइट", "control_en": "Pheromone traps plus neem oil 5 ml/L water at first symptoms.", "control_mr": "फेरोमोन ट्रॅप व सुरुवातीला निम ५ मि.ली./लिटर फवारा." },
+      { "day": 75, "en": "Leaf miner / bacterial wilt", "mr": "पानाखारा / जीवाणू विनाश", "control_en": "Remove infected plants; avoid waterlogging; copper spray if it spreads.", "control_mr": "संक्रमित रोप काढून टाका; पाणी थांबू न देता; पसरल्यास कॉपर फवारा." }
+    ],
+    "market_en": "Fresh local mandi crop - prices are usually strongest Nov-Feb and dip in the peak supply weeks.",
+    "market_mr": "थेट स्थानिक मंडी पीक - किंमत सामान्यतः नोव्हेंबर-फेब्रुवारीमध्ये चांगली मिळते."
+  },
+  "onion": {
+    "en": "Onion", "mr": "कांदा",
+    "sowing_months": [6, 7, 10, 11],
+    "water_need": "medium", "interval_days": 7,
+    "duration_days": 120, "temp_min": 10, "temp_max": 30,
+    "spacing": "30 x 10 cm",
+    "npk_kg_ha": { "n": 100, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 50, "en": "Thrips / downy mildew", "mr": "थ्रिप्स / डाउनी मिल्ड्यू", "control_en": "Blue sticky cards; imidacloprid 20 g per 100 L water if thrips appear.", "control_mr": "निळी स्टिकी चार्ट; थ्रिप्स दिसल्यास १०० लिटर पाण्यात २० ग्रॅ मिडाक्लोप्रिड." }
+    ],
+    "market_en": "Stores well for months - the storage window is itself a marketing strategy.",
+    "market_mr": "महिन्यांपर्यंत साठवता येतो - साठवण हीच विक्री रणनीती ठरू शकते."
+  },
+  "potato": {
+    "en": "Potato", "mr": "बटाटा",
+    "sowing_months": [9, 10, 11],
+    "water_need": "medium", "interval_days": 7,
+    "duration_days": 100, "temp_min": 10, "temp_max": 25,
+    "spacing": "60 x 20 cm",
+    "npk_kg_ha": { "n": 100, "p": 50, "k": 100 },
+    "pests": [
+      { "day": 40, "en": "Early blight / tuber moth", "mr": "प्रारंभिक ब्लाइट / कंद किडा", "control_en": "Healthy seed, ridging, and mancozeb 2 g/L on foliage at first lesions.", "control_mr": "नीट बियाणे, माती उंचीवणे व पहिल्या विज्ञानात मँकोझेब २ ग्रॅ/लिटर." }
+    ],
+    "market_en": "Cured storage lifts the price - sell off-season rather than at harvest glut.",
+    "market_mr": "योग्य साठवणाने किंमत मिळते - कापणीच्या काळात न विकता काळानंतर विका."
+  },
+  "brinjal": {
+    "en": "Brinjal", "mr": "वांगी",
+    "sowing_months": [1, 2, 6, 7, 10, 11],
+    "water_need": "medium", "interval_days": 6,
+    "duration_days": 130, "temp_min": 18, "temp_max": 32,
+    "spacing": "75 x 60 cm",
+    "npk_kg_ha": { "n": 100, "p": 50, "k": 50 },
+    "pests": [
+      { "day": 45, "en": "Fruit and shoot borer", "mr": "फळ व आश्व किडा", "control_en": "Neem cake in the basin, pheromone traps, and neem oil 5 ml/L weekly.", "control_mr": "बेसिनमध्ये निम खत, फेरोमोन ट्रॅप व आठवड्याला निम ५ मि.ली./लिटर." }
+    ],
+    "market_en": "Daily vegetable - quick turnover, best sold within a day of harvest.",
+    "market_mr": "रोजची भाजी - जलद विक्री, कापणीच्या एका दिवसात विकावी."
+  },
+  "okra": {
+    "en": "Okra (ladies finger)", "mr": "भेंडी",
+    "sowing_months": [4, 5, 6, 7],
+    "water_need": "medium", "interval_days": 6,
+    "duration_days": 65, "temp_min": 22, "temp_max": 35,
+    "spacing": "60 x 30 cm",
+    "npk_kg_ha": { "n": 80, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 30, "en": "Aphids / shoot borer", "mr": "मुंज / आश्व किडा", "control_en": "Yellow sticky cards; neem oil 5 ml/L; remove and burn affected shoots.", "control_mr": "पिवळी स्टिकी चार्ट; निम ५ मि.ली./लिटर; प्रभावित आश्व काढून जाळा." }
+    ],
+    "market_en": "Summer glut pushes prices down - a short-duration crop fits the lean supply weeks.",
+    "market_mr": "उन्हाळ्यात जास्त पुरवठ्यामुळे किंमत कमी होते - छोट्या कालावधीचे पीक उपयुक्त."
+  },
+  "cabbage": {
+    "en": "Cabbage", "mr": "कोबी",
+    "sowing_months": [3, 4, 9, 10, 11],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 90, "temp_min": 10, "temp_max": 25,
+    "spacing": "60 x 45 cm",
+    "npk_kg_ha": { "n": 100, "p": 50, "k": 80 },
+    "pests": [
+      { "day": 35, "en": "Cabbage looper / aphids", "mr": "कोबी लूपर / मुंज", "control_en": "Bacillus thuringiensis 2 g/L or neem oil 5 ml/L; destroy stubble after harvest.", "control_mr": "बॅसिलस थुरिंजिएन्सिस २ ग्रॅ/लिटर किंवा निम ५ मि.ली./लिटर; कापणीनंतर डारी नष्ट करा." }
+    ],
+    "market_en": "Head vegetable - graded sizes fetch better rates than mixed loads.",
+    "market_mr": "आकारनिहाय वर्गीकरण केल्यास चांगली किंमत मिळते."
+  },
+  "cauliflower": {
+    "en": "Cauliflower", "mr": "फ्लॉवर",
+    "sowing_months": [3, 4, 9, 10, 11],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 95, "temp_min": 10, "temp_max": 25,
+    "spacing": "60 x 45 cm",
+    "npk_kg_ha": { "n": 100, "p": 50, "k": 80 },
+    "pests": [
+      { "day": 40, "en": "Curd rot / diamondback moth", "mr": "कोंद रोग / मोथ", "control_en": "Avoid over-irrigation; Bt 2 g/L for caterpillars; tie outer leaves over the curd.", "control_mr": "जास्त पाणी टाकू नका; अॅकॅपिड्ससाठी बीटी २ ग्रॅ/लिटर; बाहेरची पाने वळून ठेवा." }
+    ],
+    "market_en": "Cold weeks raise curd prices - schedule harvest for winter demand.",
+    "market_mr": "थंडितीत किंमत वाढते - हिवाळ्याच्या मागणीनुसार कापणी ठरवा."
+  },
+  "peas": {
+    "en": "Peas", "mr": "वाटाणे",
+    "sowing_months": [10, 11],
+    "water_need": "low", "interval_days": 10,
+    "duration_days": 95, "temp_min": 5, "temp_max": 25,
+    "spacing": "30 x 10 cm",
+    "npk_kg_ha": { "n": 25, "p": 50, "k": 50 },
+    "pests": [
+      { "day": 40, "en": "Pod borer / powdery mildew", "mr": "शेंग किडा / पांढरा रोग", "control_en": "Neem oil 5 ml/L for borers; sulphur 2 g/L at first mildew powder.", "control_mr": "किड्यांसाठी निम ५ मि.ली./लिटर; पांढरा दिसताच कंच २ ग्रॅ/लिटर." }
+    ],
+    "market_en": "Green peas earn well in the Dec-Feb window; shelling peas are processed sold.",
+    "market_mr": "डिसेंबर-फेब्रुवारीमध्ये हिरव्या वाटाण्यांची चांगली किंमत मिळते."
+  },
+  "spinach": {
+    "en": "Spinach", "mr": "पालक",
+    "sowing_months": [9, 10, 11, 12, 1, 2],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 45, "temp_min": 10, "temp_max": 30,
+    "spacing": "20 x 10 cm",
+    "npk_kg_ha": { "n": 80, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 20, "en": "Leaf miner / downy mildew", "mr": "पानाखारा / डाउनी मिल्ड्यू", "control_en": "Yellow sticky cards; neem oil 5 ml/L at first symptom.", "control_mr": "पिवळी स्टिकी चार्ट; पहिल्या लक्षणावर निम ५ मि.ली./लिटर." }
+    ],
+    "market_en": "Leafy green - best sold within a day; successive small sowings keep prices steady.",
+    "market_mr": "पालेभाजी - एका दिवसात विकावी; थोड्या थोड्या टप्प्यात पेरणी केल्यास दर टिकतात."
+  },
+  "fenugreek": {
+    "en": "Fenugreek (methi)", "mr": "मेथी",
+    "sowing_months": [10, 11, 12, 1, 2],
+    "water_need": "low", "interval_days": 7,
+    "duration_days": 45, "temp_min": 10, "temp_max": 30,
+    "spacing": "25 x 10 cm",
+    "npk_kg_ha": { "n": 40, "p": 25, "k": 25 },
+    "pests": [
+      { "day": 20, "en": "Aphids / powdery mildew", "mr": "मुंज / पांढरा रोग", "control_en": "Neem oil 5 ml/L for aphids; sulphur 2 g/L for mildew.", "control_mr": "मुंजीसाठी निम ५ मि.ली./लिटर; पांढऱ्यासाठी कंच २ ग्रॅ/लिटर." }
+    ],
+    "market_en": "Short 45-day leafy crop; heavy local demand around festivals.",
+    "market_mr": "४५ दिवसांचे पालेभाजी पीक; सणाच्या काळात स्थानिक मागणी जास्त."
+  },
+  "coriander": {
+    "en": "Coriander", "mr": "कोथिंबीर",
+    "sowing_months": [10, 11, 12, 1, 2],
+    "water_need": "low", "interval_days": 7,
+    "duration_days": 50, "temp_min": 15, "temp_max": 30,
+    "spacing": "20 x 15 cm",
+    "npk_kg_ha": { "n": 40, "p": 20, "k": 20 },
+    "pests": [
+      { "day": 25, "en": "Aphids / stem gall", "mr": "मुंज / खोड गाठ", "control_en": "Neem oil 5 ml/L; remove and destroy galled stems.", "control_mr": "निम ५ मि.ली./लिटर; गाठ पडलेली खोडे काढून नष्ट करा." }
+    ],
+    "market_en": "Fresh green coriander holds a premium; avoid flowering by timely harvest.",
+    "market_mr": "ताजी कोथिंबीर महाग मिळते; वेळेवर कापणी करून फुले येऊ देऊ नका."
+  },
+  "cucumber": {
+    "en": "Cucumber", "mr": "काकडी",
+    "sowing_months": [1, 2, 3, 6, 7],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 65, "temp_min": 18, "temp_max": 32,
+    "spacing": "120 x 45 cm",
+    "npk_kg_ha": { "n": 60, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 30, "en": "Fruit fly / downy mildew", "mr": "फळ माय / डाउनी मिल्ड्यू", "control_en": "Methyl eugenol traps 5/ha; Metalaxyl + Mancozeb 2 kg/ha for mildew.", "control_mr": "मीथाईल युजेनॉल जाळी ५/हेक्टर; मिल्ड्यूसाठी मेटालॅक्सिल + मँकोजेब २ किलो/हेक्टर." }
+    ],
+    "market_en": "Summer favourite - harvest young and often for steady mandi rates.",
+    "market_mr": "उन्हाळ्यात लोकप्रिय - लहान वारंवार कापणी केल्यास दर टिकतात."
+  },
+  "bitter_gourd": {
+    "en": "Bitter gourd", "mr": "कारले",
+    "sowing_months": [2, 3, 4, 6, 7],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 75, "temp_min": 20, "temp_max": 35,
+    "spacing": "150 x 60 cm",
+    "npk_kg_ha": { "n": 60, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 30, "en": "Fruit fly / fruit borer", "mr": "फळ माय / फळ किडा", "control_en": "Methyl eugenol traps 5/ha; neem oil 5 ml/L weekly.", "control_mr": "मीथाईल युजेनॉल जाळी ५/हेक्टर; आठवड्याला निम ५ मि.ली./लिटर." }
+    ],
+    "market_en": "Needs a trellis/board - climbing improves fruit quality and price.",
+    "market_mr": "आधारा/पाटी लागते - वेल चढल्यास फळांचा दर्जा व किंमत चांगली."
+  },
+  "bottle_gourd": {
+    "en": "Bottle gourd", "mr": "दुधी भोपळा",
+    "sowing_months": [2, 3, 4, 6, 7],
+    "water_need": "medium", "interval_days": 6,
+    "duration_days": 80, "temp_min": 20, "temp_max": 35,
+    "spacing": "200 x 90 cm",
+    "npk_kg_ha": { "n": 60, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 35, "en": "Fruit fly / vine borer", "mr": "फळ माय / वेल किडा", "control_en": "Neem cake in basins; methyl eugenol traps; remove bored vines.", "control_mr": "बेसिनमध्ये निम खत; मीथाईल युजेनॉल जाळी; पोखरलेल्या वेली काढा." }
+    ],
+    "market_en": "Popular summer gourd; pick tender for the best rate.",
+    "market_mr": "उन्हाळ्यात लोकप्रिय भोपळा; कोवळा तोडल्यास चांगला दर."
+  },
+  "ridge_gourd": {
+    "en": "Ridge gourd", "mr": "दोडका",
+    "sowing_months": [2, 3, 4, 6, 7],
+    "water_need": "medium", "interval_days": 6,
+    "duration_days": 75, "temp_min": 22, "temp_max": 35,
+    "spacing": "150 x 90 cm",
+    "npk_kg_ha": { "n": 60, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 30, "en": "Fruit fly / anthracnose", "mr": "फळ माय / करोड", "control_en": "Methyl eugenol traps; Carbendazim 1 g/L for anthracnose.", "control_mr": "मीथाईल युजेनॉल जाळी; करोडसाठी कार्बेंडाझिम १ ग्रॅ/लिटर." }
+    ],
+    "market_en": "Harvest young for tender fruit - a favourite in local markets.",
+    "market_mr": "कोवळी फळे तोडावी - स्थानिक बाजारात लोकप्रिय."
+  },
+  "pumpkin": {
+    "en": "Pumpkin", "mr": "भोपळा",
+    "sowing_months": [1, 2, 3, 6, 7],
+    "water_need": "low", "interval_days": 7,
+    "duration_days": 90, "temp_min": 18, "temp_max": 32,
+    "spacing": "200 x 90 cm",
+    "npk_kg_ha": { "n": 60, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 35, "en": "Fruit fly / powdery mildew", "mr": "फळ माय / पांढरा रोग", "control_en": "Methyl eugenol traps; sulphur 2 g/L at first mildew.", "control_mr": "मीथाईल युजेनॉल जाळी; पांढरा दिसताच कंच २ ग्रॅ/लिटर." }
+    ],
+    "market_en": "Stores well for months - sell part after the harvest glut.",
+    "market_mr": "महिन्यांपर्यंत साठवता येतो - काही भाग कापणीनंतर विका."
+  },
+  "carrot": {
+    "en": "Carrot", "mr": "गाजर",
+    "sowing_months": [8, 9, 10, 11, 12],
+    "water_need": "medium", "interval_days": 6,
+    "duration_days": 90, "temp_min": 8, "temp_max": 25,
+    "spacing": "30 x 8 cm",
+    "npk_kg_ha": { "n": 80, "p": 50, "k": 60 },
+    "pests": [
+      { "day": 35, "en": "Carrot fly / leaf blight", "mr": "गाजर माशी / पाने झीज", "control_en": "Deep loose soil, avoid fresh manure; Mancozeb 2 g/L for blight.", "control_mr": "सैल खोल माती, ताजे शेणखत टाळा; झीजसाठी मँकोजेब २ ग्रॅ/लिटर." }
+    ],
+    "market_en": "Grade by size - uniform roots fetch a better wholesale rate.",
+    "market_mr": "आकारानुसार वर्गीकरण केल्यास घाऊक दर चांगला."
+  },
+  "radish": {
+    "en": "Radish", "mr": "मुळा",
+    "sowing_months": [8, 9, 10, 11, 1, 2],
+    "water_need": "low", "interval_days": 6,
+    "duration_days": 45, "temp_min": 8, "temp_max": 28,
+    "spacing": "20 x 8 cm",
+    "npk_kg_ha": { "n": 50, "p": 30, "k": 30 },
+    "pests": [
+      { "day": 20, "en": "Aphids / flea beetle", "mr": "मुंज / उडणारा बीटल", "control_en": "Neem oil 5 ml/L; keep the bed moist to avoid pithiness.", "control_mr": "निम ५ मि.ली./लिटर; कंद पोखरू नये म्हणून बेड ओला ठेवा." }
+    ],
+    "market_en": "Quick 45-day crop - good for filling the gap between two main crops.",
+    "market_mr": "४५ दिवसांचे जलद पीक - दोन मुख्य पिकांमधील जागा भरण्यासाठी चांगले."
+  },
+  "chilli": {
+    "en": "Chilli", "mr": "मिरची",
+    "sowing_months": [1, 2, 6, 7, 10, 11],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 140, "temp_min": 18, "temp_max": 32,
+    "spacing": "60 x 45 cm",
+    "npk_kg_ha": { "n": 100, "p": 50, "k": 50 },
+    "pests": [
+      { "day": 45, "en": "Thrips / fruit borer", "mr": "थ्रिप्स / फळ किडा", "control_en": "Blue sticky cards; imidacloprid for thrips; neem oil for borers; beware thrips-transmitted murda.", "control_mr": "निळी स्टिकी चार्ट; थ्रिप्ससाठी मिडाक्लोप्रिड; किड्यांसाठी निम; मुरडा रोगाची काळजी घ्या." }
+    ],
+    "market_en": "Bold, uniform pods and dry chilli both sell well - manage thrips early.",
+    "market_mr": "जाडसर एकसारख्या शेंगा व सुकी मिरची दोन्ही चांगल्या दराने विकल्या जातात."
+  },
+  "cluster_beans": {
+    "en": "Cluster beans (guar)", "mr": "गवार",
+    "sowing_months": [2, 3, 6, 7],
+    "water_need": "low", "interval_days": 8,
+    "duration_days": 100, "temp_min": 20, "temp_max": 35,
+    "spacing": "60 x 30 cm",
+    "npk_kg_ha": { "n": 25, "p": 40, "k": 30 },
+    "pests": [
+      { "day": 40, "en": "Pod borer / jassids", "mr": "शेंग किडा / तुटक्या", "control_en": "Neem oil 5 ml/L; imidacloprid for jassids; pick pods young.", "control_mr": "निम ५ मि.ली./लिटर; तुटक्यांसाठी मिडाक्लोप्रिड; शेंगा कोवळ्या तोडा." }
+    ],
+    "market_en": "Drought-hardy legume - a safe choice when water is limited.",
+    "market_mr": "दुष्काळ सहन करणारी डाळ - पाणी कमी असल्यास सुरक्षित पर्याय."
+  },
+  "drumstick": {
+    "en": "Drumstick", "mr": "शेवगा",
+    "sowing_months": [6, 7],
+    "water_need": "low", "interval_days": 10,
+    "duration_days": 180, "temp_min": 20, "temp_max": 35,
+    "spacing": "250 x 150 cm",
+    "npk_kg_ha": { "n": 50, "p": 40, "k": 40 },
+    "pests": [
+      { "day": 60, "en": "Drumstick caterpillar / hairy caterpillar", "mr": "शेवगा अळी / केसाळ अळी", "control_en": "Hand-pick and destroy; spray Bt 2 g/L or neem oil 5 ml/L.", "control_mr": "हाताने गोळा करून नष्ट करा; बीटी २ ग्रॅ/लिटर किंवा निम ५ मि.ली./लिटर." }
+    ],
+    "market_en": "Perennial - a good long-term hedge crop with steady pod demand.",
+    "market_mr": "बहुवर्षीय - दीर्घकालीन कुंपण पीक, शेंगांना स्थिर मागणी."
+  },
+  "capsicum": {
+    "en": "Capsicum (bell pepper)", "mr": "ढोबळी मिरची",
+    "sowing_months": [1, 2, 9, 10, 11],
+    "water_need": "medium", "interval_days": 5,
+    "duration_days": 110, "temp_min": 15, "temp_max": 30,
+    "spacing": "60 x 45 cm",
+    "npk_kg_ha": { "n": 100, "p": 50, "k": 50 },
+    "pests": [
+      { "day": 45, "en": "Thrips / fruit borer", "mr": "थ्रिप्स / फळ किडा", "control_en": "Blue sticky cards; imidacloprid for thrips; neem oil for borers.", "control_mr": "निळी स्टिकी चार्ट; थ्रिप्ससाठी मिडाक्लोप्रिड; किड्यांसाठी निम." }
+    ],
+    "market_en": "Coloured capsicum earns a premium in city markets; needs steady moisture.",
+    "market_mr": "रंगीत ढोबळी मिरचीला शहरी बाजारात चांगला दर; नियमित आर्द्रता लागते."
+  }
+}

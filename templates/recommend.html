@@ -1,0 +1,203 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% block title %}New recommendation - Vasudha Krishi{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+{% endblock %}
+
+{% block body %}
+<div class="page-head">
+    <div class="container-xl page-head-inner">
+        <div>
+            <div class="eyebrow">{{ 'सूचना' if lang == 'mr' else 'Recommendation' }}</div>
+            <h1>{{ 'तुमच्या शेतासाठी पीक निवडा' if lang == 'mr' else 'Pick the field, tell us your water' }}</h1>
+            <p class="sub">
+                {{ 'मॅपवर पिन टाका, पाण्याची उपलब्धता नोंदवा आणि पीक, खत आणि कॅलेंडर मिळवा' if lang == 'mr'
+                   else 'Drop a pin on the map - we fetch soil and rainfall for that exact point, then match it with your water and a crop group.' }}
+            </p>
+        </div>
+        <div class="head-actions">
+            <a href="{{ url_for('main.index') }}" class="btn-ghost dark"><i class="bi bi-house"></i> {{ 'डॅशबोर्ड' if lang == 'mr' else 'Dashboard' }}</a>
+        </div>
+    </div>
+</div>
+
+<div class="container-xl page-body">
+    <form action="{{ url_for('main.recommend_view') }}" method="post" id="predict-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input type="hidden" id="field-lat" name="lat" value="">
+        <input type="hidden" id="field-lon" name="lon" value="">
+        <input type="hidden" id="field-district" name="district" value="">
+        <input type="hidden" id="field-state" name="state" value="">
+
+        <div class="recommend-grid">
+            {# ------------------------------------------------ map column #}
+            <div class="map-card">
+                <div class="map-toolbar">
+                    <button type="button" id="btn-geo" class="toolbar-btn">
+                        <i class="bi bi-crosshair"></i> {{ 'माझे स्थान' if lang == 'mr' else 'Use my location' }}
+                    </button>
+                    <button type="button" id="btn-toggle-district" class="toolbar-btn">
+                        <i class="bi bi-list-ul"></i> {{ 'जिल्हा निवडा' if lang == 'mr' else 'Pick a district' }}
+                    </button>
+                    <div id="resolve-status">
+                        <i class="bi bi-pin-angle me-1"></i>{{ 'पिन टाका किंवा जिल्हा निवडा.' if lang == 'mr' else 'No location yet - click the map or use GPS.' }}
+                    </div>
+                </div>
+
+                <div id="district-picker" class="grid-2 mb-2 d-none">
+                    <div>
+                        <label class="f-label" for="state-select">{{ 'राज्य' if lang == 'mr' else 'State' }}</label>
+                        <select id="state-select" class="sel">
+                            <option value="">-- {{ 'राज्य' if lang == 'mr' else 'Select state' }} --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="f-label" for="district-select">{{ 'जिल्हा' if lang == 'mr' else 'District' }}</label>
+                        <select id="district-select" class="sel" disabled>
+                            <option value="">-- {{ 'जिल्हा' if lang == 'mr' else 'Select district' }} --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="map" class="map-box"></div>
+                <div class="map-foot">
+                    <i class="bi bi-info-circle"></i>
+                    {{ 'क्लिक करून पिन टाका, ओढून बदला. माती: SoilGrids 250 m · हवामान: Open-Meteo · पाऊस: IMD.' if lang == 'mr'
+                       else 'Click to drop the pin, drag to fine-tune. Soil: SoilGrids 250 m · Weather: Open-Meteo · Rainfall: IMD normals.' }}
+                </div>
+
+                <div id="resolved-summary" class="resolved d-none">
+                    <div class="resolved-top">
+                        <div>
+                            <strong id="sum-place"></strong>
+                            <div class="resolved-coords" id="sum-coords"></div>
+                        </div>
+                        <span class="month-badge" id="sum-month"></span>
+                    </div>
+                    <div id="sum-chips"></div>
+                    <div id="sum-warnings" class="d-none"></div>
+                </div>
+            </div>
+
+            {# ------------------------------------------------ form column #}
+            <div class="form-card">
+                <h1>{{ 'शेत माहिती' if lang == 'mr' else 'Your field, your water' }}</h1>
+                <p class="lede">{{ 'हे तपशील पुढील सर्व शिफारसी बदलतात.' if lang == 'mr' else 'These four inputs change the crop ranking, dose and schedule.' }}</p>
+
+                <div class="form-section">
+                    <div class="form-step"><span class="step-no">1</span> {{ 'हंगाम' if lang == 'mr' else 'Season' }}</div>
+                    <div class="grid-2">
+                        <div>
+                            <label class="f-label" for="month-select">{{ 'पेरणीचा महिना' if lang == 'mr' else 'Sowing month' }}</label>
+                            <select id="month-select" name="month" class="sel">
+                                {% for label in (month_labels_mr if lang == 'mr' else month_labels) %}
+                                <option value="{{ loop.index }}" {% if loop.index == today_month %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label class="f-label" for="area-input">{{ 'क्षेत्र (एकर)' if lang == 'mr' else 'Field size (acres)' }}</label>
+                            <input type="number" step="0.1" min="0" id="area-input" name="area_acres" class="inp"
+                                   placeholder="{{ 'उदा. 2.5' if lang == 'mr' else 'e.g. 2.5' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-step"><span class="step-no">2</span> {{ 'पीक गट' if lang == 'mr' else 'Crop group' }}</div>
+                    <div class="chip-row">
+                        <label class="chip">
+                            <input type="radio" name="category" value="" checked>
+                            <i class="bi bi-stars"></i> {{ 'कोणतेही पीक' if lang == 'mr' else 'Any crop' }}
+                        </label>
+                        {% for key, info in categories.items() %}
+                        <label class="chip">
+                            <input type="radio" name="category" value="{{ key }}">
+                            <i class="bi {{ info.icon }}"></i>
+                            {{ info.label_mr if lang == 'mr' else info.label_en }}
+                        </label>
+                        {% endfor %}
+                    </div>
+                    <div class="f-hint">
+                        {{ 'गट निवडल्यास त्या गटातील पीकांपुरतीच शिफारस होईल. भाजीपाला मॉडेलमध्ये नाही - त्यासाठी नियम-आधारित सूचना मिळेल.'
+                           if lang == 'mr' else 'Pick a group to only rank crops inside it. Vegetables run on the rule engine, not the ML model.' }}
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-step"><span class="step-no">3</span> {{ 'तुमचे पाणी' if lang == 'mr' else 'Your water' }}</div>
+                    <div class="water-box">
+                        <div class="grid-2">
+                            <div>
+                                <label class="f-label" for="water-source">{{ 'सिंचन स्रोत' if lang == 'mr' else 'Water source' }}</label>
+                                <select id="water-source" name="water_source" class="sel">
+                                    <option value="">{{ 'निवडा' if lang == 'mr' else 'Select a source' }}</option>
+                                    {% for key, labels in water_sources.items() %}
+                                    <option value="{{ key }}">{{ labels[1] if lang == 'mr' else labels[0] }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="f-label" for="water-days">{{ 'आठवड्यातून दिवस' if lang == 'mr' else 'Days per week' }}</label>
+                                <input type="number" min="0" max="7" step="1" id="water-days" name="water_days"
+                                       class="inp" placeholder="{{ 'उदा. 3' if lang == 'mr' else 'e.g. 3' }}">
+                            </div>
+                        </div>
+                        <div class="water-note">
+                            <i class="bi bi-droplet-half"></i>
+                            <span>{{ 'पावसाचा हिशोब हा हवामान सरासरी आहे - तो तुमच्या शेतासाठी पाणी ठरवत नाही. विहीर, बोअरवेल, कालवा किंवा ठिबक असल्यास तेच नोंदवा.'
+                                   if lang == 'mr'
+                                   else 'Rainfall shown later is a district climate average, not your water supply. Tell us the well, borewell, canal or drip you actually run.' }}</span>
+                        </div>
+                        <div class="mt-2">
+                            <label class="f-label" for="water-note">{{ 'टीप (ऐक्या)' if lang == 'mr' else 'Note (optional)' }}</label>
+                            <input type="text" id="water-note" name="water_note" class="inp" maxlength="255"
+                                   placeholder="{{ 'उदा. दोन विहीर, दर दोन दिवसांनी एकदा' if lang == 'mr' else 'e.g. two wells, alternate days' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-step"><span class="step-no">4</span> {{ 'माती चाचणी' if lang == 'mr' else 'Soil test values' }}</div>
+                    <div class="grid-4">
+                        <div>
+                            <label class="f-label" for="input-n">N</label>
+                            <input type="number" min="0" max="200" step="1" class="inp" id="input-n" name="n" placeholder="kg/ha">
+                        </div>
+                        <div>
+                            <label class="f-label" for="input-p">P</label>
+                            <input type="number" min="0" max="200" step="1" class="inp" id="input-p" name="p" placeholder="kg/ha">
+                        </div>
+                        <div>
+                            <label class="f-label" for="input-k">K</label>
+                            <input type="number" min="0" max="200" step="1" class="inp" id="input-k" name="k" placeholder="kg/ha">
+                        </div>
+                        <div>
+                            <label class="f-label" for="input-ph">pH</label>
+                            <input type="number" min="3" max="10" step="0.1" class="inp" id="input-ph" name="ph" placeholder="3-10">
+                        </div>
+                    </div>
+                    <div class="f-hint">
+                        {{ 'रिकामे सोडल्यास जुळवणीतून आलेल्या किंमती वापरल्या जातील. माती चाचणीतील Soil Health Card नोंदवल्यास अचूक डोस मिळेल.'
+                           if lang == 'mr' else 'Leave blank to use the fetched values. Enter Soil Health Card N/P/K for an exact deficit-based dose.' }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary-pill block mt-3" id="btn-predict" disabled>
+                    <i class="bi bi-stars"></i> {{ 'शिफारस करा' if lang == 'mr' else 'Recommend my crop' }}
+                </button>
+                <div class="f-hint" style="text-align:center;">
+                    {{ 'सुरुवातीला पिन टाका - नंतर हे बटण चालू होईल.' if lang == 'mr' else 'Drop the pin first - this button unlocks once the location resolves.' }}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

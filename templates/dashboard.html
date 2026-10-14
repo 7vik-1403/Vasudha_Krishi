@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% block title %}Dashboard - Vasudha Krishi{% endblock %}
+
+{% block body %}
+<section class="page-head">
+    <div class="container-xl page-head-inner">
+        <div>
+            <div class="eyebrow">{{ today if false else '' }}{{ 'नमस्कार' if lang == 'mr' else 'Namaste' }}, {{ current_user.greeting }}</div>
+            <h1>{{ 'आज आपल्या शेताचा आराखडा पाहूया' if lang == 'mr' else 'Your farm office for the season' }}</h1>
+            <p class="sub">
+                {% if lang == 'mr' %}
+                {{ stats.pending }} कामे प्रलंबित &middot; {{ stats.farms }} शेतं जतन
+                {% if stats.crops %} &middot; घेत आहे {{ stats.crops|join(', ') }}{% endif %}
+                {% else %}
+                {{ stats.pending }} task{{ 's' if stats.pending != 1 }} waiting &middot;
+                {{ stats.farms }} farm{{ 's' if stats.farms != 1 }} saved
+                {% if stats.crops %} &middot; growing {{ stats.crops|join(', ') }}{% endif %}
+                {% endif %}
+            </p>
+        </div>
+        <div class="head-actions">
+            <a href="{{ url_for('main.recommend_view') }}" class="btn-primary-pill"><i class="bi bi-plus-lg"></i> {{ 'नवीन शिफारस' if lang == 'mr' else 'New recommendation' }}</a>
+            {% if stats.farms %}
+            <a href="{{ url_for('main.farms') }}" class="btn-ghost dark">{{ 'माझी शेतं उघडा' if lang == 'mr' else 'Open my farms' }}</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<div class="container-xl page-body">
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-seedling"></i></div>
+            <div><strong>{{ stats.farms }}</strong><span>{{ 'शेतं' if lang == 'mr' else 'Farms' }}</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon warn"><i class="bi bi-bell"></i></div>
+            <div><strong>{{ stats.pending }}</strong><span>{{ 'प्रलंबित कामे' if lang == 'mr' else 'Tasks waiting' }}</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon ok"><i class="bi bi-check2-circle"></i></div>
+            <div><strong>{{ stats.done }}</strong><span>{{ 'पूर्ण' if lang == 'mr' else 'Completed' }}</span></div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon alt"><i class="bi bi-pie-chart"></i></div>
+            <div><strong>{{ stats.crops|length }}</strong><span>{{ 'सुरू असलेली पिके' if lang == 'mr' else 'Crops in play' }}</span></div>
+        </div>
+    </div>
+
+    {% if not farms %}
+    <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-pin-map"></i></div>
+        <h2>{{ 'अजून शेत नाही' if lang == 'mr' else 'No farms yet' }}</h2>
+        <p>{{ 'नकाशावर एक पिन टाका, तुमचे पाणी व माती सांगा, आम्ही त्या शेताचा पीक आराखडा, डोस व कॅलेंडर तयार करू.' if lang == 'mr' else 'Drop a pin on the map, tell us your water and soil, and we will build the crop plan, doses and calendar for that field.' }}</p>
+        <a href="{{ url_for('main.recommend_view') }}" class="btn-primary-pill">{{ 'माझी पहिली शिफारस मिळवा' if lang == 'mr' else 'Get my first recommendation' }}</a>
+    </div>
+    {% else %}
+    <div class="two-col">
+        <section class="panel">
+            <div class="panel-head">
+                <h2><i class="bi bi-calendar2-week"></i> {{ 'पुढे येत आहे' if lang == 'mr' else 'Coming up' }}</h2>
+                <a href="{{ url_for('main.farms') }}" class="link-more">{{ 'सर्व शेतं' if lang == 'mr' else 'All farms' }}</a>
+            </div>
+            {% if upcoming %}
+            <ul class="task-list">
+                {% for task, farm in upcoming %}
+                <li class="task-row kind-{{ task.kind }}">
+                    <span class="task-dot"></span>
+                    <div class="task-body">
+                        <div class="task-title">{{ task.title(lang) if lang == 'mr' else task.title_en }}</div>
+                        <div class="task-meta">
+                            <span class="mini-chip">{{ farm.name }}</span>
+                            {% if task.due_date %}<span>{{ task.due_date.strftime('%d %b') }}</span>{% endif %}
+                            {% if task.source == 'ai' %}<span class="mini-chip ai">AI</span>{% endif %}
+                        </div>
+                    </div>
+                    <form action="{{ url_for('main.toggle_task', task_id=task.id) }}" method="post">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button class="tick" type="submit" title="{{ 'पूर्ण म्हणून नोंदवा' if lang == 'mr' else 'Mark done' }}"><i class="bi bi-check2"></i></button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="empty-line">{{ 'काहीही नियोजित नाही. शेत जतन झाल्यावर कामे दिसतील.' if lang == 'mr' else 'Nothing scheduled. Tasks appear once a farm is saved.' }}</p>
+            {% endif %}
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h2><i class="bi bi-house-heart"></i> {{ 'तुमची शेतं' if lang == 'mr' else 'Your farms' }}</h2>
+            </div>
+            <div class="farm-mini-grid">
+                {% for farm in farms %}
+                {% set latest = farm.recommendations[-1] if farm.recommendations else None %}
+                <a class="farm-mini" href="{{ url_for('main.farm_detail', farm_id=farm.id) }}">
+                    <span class="crop-thumb" style="background-image:url('{{ url_for('static', filename='img/' + (farm.crop or 'rice') + '.jpg') }}')"></span>
+                    <span class="farm-mini-body">
+                        <strong>{{ farm.name }}</strong>
+                        <small>{{ farm.district or ('स्थान सेट' if lang == 'mr' else 'Location set') }}{% if farm.area_acres %} &middot; {{ farm.area_acres }} {{ 'एकर' if lang == 'mr' else 'ac' }}{% endif %}</small>
+                        {% if latest %}
+                        <span class="mini-chip">{{ latest.crop }}{% if latest.confidence %} · {{ (latest.confidence * 100)|round(0) }}%{% endif %}</span>
+                        {% endif %}
+                    </span>
+                </a>
+                {% endfor %}
+            </div>
+            {% if latest %}
+            <div class="tip-card">
+                <i class="bi bi-stars"></i>
+                <div>
+                    <strong>{{ 'नवीनतम सल्ला' if lang == 'mr' else 'Latest advice' }}</strong>
+                    <div class="small">{{ latest.crop|title }} {{ 'शेत क्र.' if lang == 'mr' else 'on farm #' }}{{ latest.farm_id }} -
+                        <a href="{{ url_for('main.farm_detail', farm_id=latest.farm_id) }}">{{ 'त्याचे कॅलेंडर उघडा' if lang == 'mr' else 'open its calendar' }}</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </section>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

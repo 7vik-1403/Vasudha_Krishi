@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "note": "Agro-climatic suitability windows used to hard-exclude crops that cannot grow at a location. temp_* and rain_* are the mean monthly temperature (C) and the mean monthly rainfall (mm) of the growing season; ph_* is the workable soil pH. Values follow common ICAR / state extension agro-climatic guidance and are indicative - adjust to local advisory.",
+    "source": "ICAR crop production guides + state agriculture department package-of-practices (indicative)",
+    "updated": "2026-10-14"
+  },
+  "rice":       {"temp_min": 20, "temp_max": 38, "rain_min": 60, "rain_max": 450, "ph_min": 5.0, "ph_max": 8.0, "climate_en": "warm and humid, assured water", "climate_mr": "उबदार व दमट, भरपूर पाणी"},
+  "maize":      {"temp_min": 18, "temp_max": 35, "rain_min": 30, "rain_max": 300, "ph_min": 5.5, "ph_max": 7.5, "climate_en": "warm season, moderate water", "climate_mr": "उबदार हंगाम, मध्यम पाणी"},
+  "chickpea":   {"temp_min": 12, "temp_max": 30, "rain_min": 5,  "rain_max": 150, "ph_min": 6.0, "ph_max": 8.5, "climate_en": "cool dry winter (rabi)", "climate_mr": "थंड कोरडा हिवाळा (रबी)"},
+  "lentil":     {"temp_min": 10, "temp_max": 28, "rain_min": 5,  "rain_max": 150, "ph_min": 6.0, "ph_max": 8.0, "climate_en": "cool dry winter (rabi)", "climate_mr": "थंड कोरडा हिवाळा (रबी)"},
+  "blackgram":  {"temp_min": 20, "temp_max": 35, "rain_min": 20, "rain_max": 250, "ph_min": 6.0, "ph_max": 8.0, "climate_en": "warm, short duration", "climate_mr": "उबदार, अल्प कालावधी"},
+  "mungbean":   {"temp_min": 20, "temp_max": 35, "rain_min": 20, "rain_max": 250, "ph_min": 6.0, "ph_max": 7.5, "climate_en": "warm, short duration", "climate_mr": "उबदार, अल्प कालावधी"},
+  "pigeonpeas": {"temp_min": 18, "temp_max": 35, "rain_min": 20, "rain_max": 300, "ph_min": 5.5, "ph_max": 8.0, "climate_en": "warm, rainfed kharif", "climate_mr": "उबदार, खरीप पर्जन्यावर"},
+  "mothbeans":  {"temp_min": 22, "temp_max": 40, "rain_min": 5,  "rain_max": 180, "ph_min": 6.0, "ph_max": 8.0, "climate_en": "hot and dry, drought tolerant", "climate_mr": "उष्ण व कोरडे, दुष्काळ सहनशील"},
+  "kidneybeans":{"temp_min": 12, "temp_max": 27, "rain_min": 30, "rain_max": 300, "ph_min": 5.5, "ph_max": 7.0, "climate_en": "cool temperate / hill climate", "climate_mr": "थंड समशीतोष्ण / डोंगर हवामान"},
+  "apple":      {"temp_min": 4,  "temp_max": 18, "rain_min": 30, "rain_max": 250, "ph_min": 5.5, "ph_max": 7.0, "climate_en": "temperate with cold winter (chilling)", "climate_mr": "थंड हिवाळा असलेले समशीतोष्ण"},
+  "banana":     {"temp_min": 20, "temp_max": 36, "rain_min": 50, "rain_max": 450, "ph_min": 5.5, "ph_max": 8.0, "climate_en": "hot and humid tropical", "climate_mr": "उष्ण व दमट उष्णकटिबंधीय"},
+  "grapes":     {"temp_min": 15, "temp_max": 33, "rain_min": 15, "rain_max": 250, "ph_min": 6.0, "ph_max": 8.0, "climate_en": "warm dry with cool winter", "climate_mr": "उबदार कोरडे व थंड हिवाळा"},
+  "mango":      {"temp_min": 22, "temp_max": 40, "rain_min": 15, "rain_max": 350, "ph_min": 5.5, "ph_max": 8.0, "climate_en": "hot tropical / subtropical", "climate_mr": "उष्ण उष्णकटिबंधीय / उपोष्ण"},
+  "muskmelon":  {"temp_min": 22, "temp_max": 40, "rain_min": 5,  "rain_max": 180, "ph_min": 6.0, "ph_max": 7.5, "climate_en": "hot dry summer (zaid)", "climate_mr": "उष्ण कोरडा उन्हाळा (जायद)"},
+  "orange":     {"temp_min": 15, "temp_max": 36, "rain_min": 25, "rain_max": 300, "ph_min": 5.5, "ph_max": 8.0, "climate_en": "subtropical, well drained", "climate_mr": "उपोष्ण, चांगला निचरा"},
+  "papaya":     {"temp_min": 20, "temp_max": 36, "rain_min": 30, "rain_max": 350, "ph_min": 5.5, "ph_max": 7.5, "climate_en": "warm tropical, frost free", "climate_mr": "उबदार उष्णकटिबंधीय, दंव नसलेले"},
+  "pomegranate":{"temp_min": 18, "temp_max": 42, "rain_min": 5,  "rain_max": 180, "ph_min": 6.0, "ph_max": 8.5, "climate_en": "hot dry, drought tolerant", "climate_mr": "उष्ण कोरडे, दुष्काळ सहनशील"},
+  "watermelon": {"temp_min": 22, "temp_max": 40, "rain_min": 5,  "rain_max": 180, "ph_min": 6.0, "ph_max": 7.5, "climate_en": "hot dry summer (zaid)", "climate_mr": "उष्ण कोरडा उन्हाळा (जायद)"},
+  "cotton":     {"temp_min": 20, "temp_max": 40, "rain_min": 20, "rain_max": 350, "ph_min": 5.5, "ph_max": 8.5, "climate_en": "hot, long warm season", "climate_mr": "उष्ण, दीर्घ उबदार हंगाम"},
+  "jute":       {"temp_min": 24, "temp_max": 40, "rain_min": 60, "rain_max": 450, "ph_min": 5.5, "ph_max": 7.5, "climate_en": "hot and humid, high rainfall", "climate_mr": "उष्ण व दमट, जास्त पाऊस"},
+  "coffee":     {"temp_min": 14, "temp_max": 28, "rain_min": 60, "rain_max": 450, "ph_min": 5.0, "ph_max": 6.5, "climate_en": "cool humid highland with shade", "climate_mr": "थंड दमट उंचवटा, सावली"},
+  "coconut":    {"temp_min": 20, "temp_max": 36, "rain_min": 50, "rain_max": 450, "ph_min": 5.0, "ph_max": 8.0, "climate_en": "warm humid coastal tropical", "climate_mr": "उबदार दमट किनारपट्टी उष्णकटिबंधीय"}
+}

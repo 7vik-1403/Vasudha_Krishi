@@ -1,0 +1,23 @@
+crop,msp,unit,year,source,note
+rice,2300,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Common grade; Grade A = 2320
+maize,2225,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Kharif maize; Rabi = 2350
+chickpea,5650,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Gram
+lentil,6700,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Masur
+blackgram,7400,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Urad
+mungbean,8677,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Moong
+pigeonpeas,7550,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Tur / Arhar
+cotton,7366,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,Medium staple; long staple = 7666
+jute,2500,INR/quintal,2024-25,CACP / Department of Agriculture & Farmers Welfare,TD-1; verify grade-wise rates
+kidneybeans,,INR/quintal,,,"No MSP (not a procured crop) - check local mandi / agmarknet"
+mothbeans,,INR/quintal,,,"No MSP - check local mandi / agmarknet"
+coconut,,INR/quintal,,,No MSP - horticulture, market driven
+coffee,,INR/quintal,,,No MSP - price set by coffee boards / auctions
+apple,,INR/quintal,,,No MSP - horticulture, market driven
+banana,,INR/quintal,,,No MSP - horticulture, market driven
+grapes,,INR/quintal,,,No MSP - horticulture, market driven
+mango,,INR/quintal,,,No MSP - horticulture, market driven
+muskmelon,,INR/quintal,,,No MSP - horticulture, market driven
+orange,,INR/quintal,,,No MSP - horticulture, market driven
+papaya,,INR/quintal,,,No MSP - horticulture, market driven
+pomegranate,,INR/quintal,,,No MSP - horticulture, market driven
+watermelon,,INR/quintal,,,No MSP - horticulture, market driven

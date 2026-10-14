@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "note": "Indicative irrigation demand per crop. 'need' drives the water-availability check and the irrigation schedule; 'interval_days' is the gap between irrigations under normal water supply. Values follow common extension guidance and should be adjusted to the field, soil texture and rainfall.",
+    "updated": "2026-10-09",
+    "need_days_per_week": { "low": 1, "medium": 3, "high": 5 }
+  },
+  "rice": { "need": "high", "interval_days": 5, "season_mm": 1100 },
+  "maize": { "need": "medium", "interval_days": 8, "season_mm": 650 },
+  "chickpea": { "need": "low", "interval_days": 14, "season_mm": 350 },
+  "kidneybeans": { "need": "medium", "interval_days": 9, "season_mm": 500 },
+  "pigeonpeas": { "need": "low", "interval_days": 12, "season_mm": 450 },
+  "mothbeans": { "need": "low", "interval_days": 15, "season_mm": 300 },
+  "mungbean": { "need": "low", "interval_days": 13, "season_mm": 350 },
+  "blackgram": { "need": "low", "interval_days": 13, "season_mm": 380 },
+  "lentil": { "need": "low", "interval_days": 14, "season_mm": 330 },
+  "cotton": { "need": "high", "interval_days": 7, "season_mm": 900 },
+  "jute": { "need": "high", "interval_days": 5, "season_mm": 1200 },
+  "coconut": { "need": "high", "interval_days": 6, "season_mm": 1200 },
+  "coffee": { "need": "medium", "interval_days": 7, "season_mm": 1500 },
+  "apple": { "need": "medium", "interval_days": 10, "season_mm": 700 },
+  "banana": { "need": "high", "interval_days": 5, "season_mm": 1200 },
+  "grapes": { "need": "medium", "interval_days": 7, "season_mm": 700 },
+  "mango": { "need": "medium", "interval_days": 10, "season_mm": 700 },
+  "muskmelon": { "need": "medium", "interval_days": 6, "season_mm": 600 },
+  "orange": { "need": "medium", "interval_days": 8, "season_mm": 750 },
+  "papaya": { "need": "medium", "interval_days": 6, "season_mm": 700 },
+  "pomegranate": { "need": "medium", "interval_days": 10, "season_mm": 650 },
+  "watermelon": { "need": "medium", "interval_days": 6, "season_mm": 600 }
+}

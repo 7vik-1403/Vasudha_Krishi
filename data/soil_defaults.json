@@ -1,0 +1,11 @@
+{
+  "_source": "Medians of Crop_recommendation.csv (2200 rows, 22 crops) - demo defaults ONLY, not measured soil",
+  "N": 37.0,
+  "P": 51.0,
+  "K": 32.0,
+  "ph": 6.42504527,
+  "temperature": 25.5986932,
+  "humidity": 80.473145665,
+  "rainfall": 94.86762427,
+  "npk_unit": "kg/ha (soil test units as used by Soil Health Card)"
+}

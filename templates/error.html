@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Error {{ code }} - Vasudha Krishi{% endblock %}
+{% block body %}
+{% set mr = session.get('language') == 'mr' %}
+{% if mr %}
+    {% set heading = 'हे पान नकाशावर नाही.' if code == 404 else ('आमच्याकडे काहीतरी चुकले.' if code == 500 else ('ही विनंती समजू शकली नाही.' if code == 400 else (message or 'अनपेक्षित त्रुटी.'))) %}
+    {% set try_again = 'पुन्हा प्रयत्न करा, किंवा डॅशबोर्डवर परत जा.' %}
+    {% set back = 'काम करणाऱ्या ठिकाणी परत' %}
+{% else %}
+    {% set heading = 'That page is not on the map.' if code == 404 else ('Something went wrong on our side.' if code == 500 else ('That request could not be understood.' if code == 400 else (message or 'Unexpected error.'))) %}
+    {% set try_again = 'Try again, or head back to the dashboard.' %}
+    {% set back = 'Back where it works' %}
+{% endif %}
+<div class="error-page">
+    <div class="error-code">{{ code }}</div>
+    <h1>{{ heading }}</h1>
+    {% if message and message != heading %}
+    <p>{{ message }}</p>
+    {% else %}
+    <p>{{ try_again }}</p>
+    {% endif %}
+    <a href="{{ url_for('main.index') }}" class="btn-primary-pill">
+        <i class="bi bi-house"></i> {{ back }}
+    </a>
+</div>
+{% endblock %}

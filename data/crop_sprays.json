@@ -1,0 +1,29 @@
+{
+  "_meta": {
+    "note": "For each crop, a list parallel to the 'pests' array in crop_calendar.json. Each entry is [primary_product_key, alternative_product_key_or_null]. Product keys resolve against data/spray_products.json.",
+    "updated": "2026-10-14"
+  },
+  "rice":        [["chlorantraniliprole", "neem_oil"], ["thiamethoxam", "imidacloprid"], ["tricyclazole", null]],
+  "wheat":       [["imidacloprid", "neem_oil"], ["propiconazole", "sulphur_80wp"], ["chlorpyrifos", null]],
+  "maize":       [["chlorantraniliprole", "bacillus_bt"], ["metalaxyl_mancozeb", "mancozeb"]],
+  "chickpea":    [["emamectin_benzoate", "helicoverpa_npv"], ["trichoderma", null]],
+  "lentil":      [["quinalphos", "emamectin_benzoate"], ["carbendazim", "sulphur_80wp"]],
+  "blackgram":   [["cypermethrin", "neem_oil"], ["mancozeb", "sulphur_80wp"]],
+  "mungbean":    [["quinalphos", "neem_seed_kernel_extract"], ["chlorothalonil", "mancozeb"]],
+  "pigeonpeas":  [["helicoverpa_npv", "neem_oil"], ["trichoderma", null]],
+  "mothbeans":   [["neem_oil", "cypermethrin"]],
+  "kidneybeans": [["dimethoate", "emamectin_benzoate"], ["mancozeb", null]],
+  "cotton":      [["chlorantraniliprole", "bacillus_bt"], ["thiamethoxam", "imidacloprid"], ["copper_oxychloride", null]],
+  "jute":        [["quinalphos", "neem_oil"], ["mancozeb", null]],
+  "coconut":     [["phorate_10g", "neem_oil"], ["bordeaux_mixture", "copper_oxychloride"]],
+  "coffee":      [["phorate_10g", null], ["copper_oxychloride", "bordeaux_mixture"]],
+  "apple":       [["dimethoate", "neem_oil"], ["carbendazim", "sulphur_80wp"]],
+  "banana":      [["carbofuran_3g", null], ["mancozeb", "sulphur_80wp"]],
+  "grapes":      [["spiromesifen", null], ["metalaxyl_mancozeb", "sulphur_80wp"]],
+  "mango":       [["dimethoate", "methyl_eugenol_trap"], ["sulphur_80wp", "copper_oxychloride"]],
+  "muskmelon":   [["cypermethrin", "methyl_eugenol_trap"], ["metalaxyl_mancozeb", "sulphur_80wp"]],
+  "orange":      [["imidacloprid", "neem_oil"], ["copper_oxychloride", null]],
+  "papaya":      [["imidacloprid", "methyl_eugenol_trap"], ["mancozeb", null]],
+  "pomegranate": [["chlorantraniliprole", "neem_oil"], ["copper_oxychloride", "streptocycline"]],
+  "watermelon":  [["thiamethoxam", "methyl_eugenol_trap"], ["carbendazim", null]]
+}

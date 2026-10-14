@@ -1,0 +1,24 @@
+crop,target_yield_t_ha,n_kg_ha,p_kg_ha,k_kg_ha,note
+rice,5.0,110,50,70,Indicative total nutrient uptake for target yield - calibrate to local advisory
+wheat,5.0,130,55,45,Indicative total nutrient uptake for target yield - calibrate to local advisory
+maize,6.0,150,60,60,Indicative total nutrient uptake for target yield - calibrate to local advisory
+chickpea,2.5,40,40,40,Pulses fix most of their N - N dose mainly at sowing
+lentil,1.5,30,40,30,Pulses fix most of their N - N dose mainly at sowing
+blackgram,1.5,30,40,30,Pulses fix most of their N - N dose mainly at sowing
+mungbean,1.5,30,40,30,Pulses fix most of their N - N dose mainly at sowing
+pigeonpeas,2.0,40,45,40,Pulses fix most of their N - N dose mainly at sowing
+mothbeans,1.0,25,30,25,Drought tolerant pulse - low demand
+kidneybeans,2.0,40,50,40,Indicative total nutrient uptake for target yield - calibrate to local advisory
+cotton,2.5,160,60,80,Seed-cotton yield basis; heavy K consumer
+jute,3.0,100,50,60,Indicative total nutrient uptake for target yield - calibrate to local advisory
+coconut,80,100,40,120,Per hectare of adult palms (approx 80-110 palms/ha)
+coffee,1.0,100,30,80,Per hectare of adult bearing plantation
+apple,15.0,80,40,80,Per hectare mature orchard
+banana,40.0,180,70,250,Heavy K feeder; Per ha of Tissue culture banana
+grapes,15.0,100,50,120,Per hectare mature vineyard
+mango,10.0,120,50,120,Per hectare mature orchard
+muskmelon,20.0,80,45,80,Indicative for protected/open field muskmelon
+orange,15.0,120,50,120,Per hectare mature orchard
+papaya,30.0,150,70,150,Per ha high density plantation
+pomegranate,12.0,100,45,100,Per ha mature orchard
+watermelon,25.0,70,40,70,Indicative for open field watermelon
