@@ -14,6 +14,7 @@ _SUITABILITY = None
 _FERTILIZER_PRICES = None
 _SPRAY_PRODUCTS = None
 _CROP_SPRAYS = None
+_ECONOMICS = None
 
 
 def _read_json(name):
@@ -172,4 +173,18 @@ def load_crop_sprays():
         raw = _read_json("crop_sprays.json")
         _CROP_SPRAYS = {key: value for key, value in raw.items() if not key.startswith("_")}
     return _CROP_SPRAYS
+
+
+def load_economics():
+    """Indicative input-cost assumptions for the profitability calculator (never market data)."""
+    global _ECONOMICS
+    if _ECONOMICS is None:
+        raw = _read_json("crop_economics.json")
+        _ECONOMICS = {
+            "meta": raw.get("_meta") or {},
+            "defaults": raw.get("defaults") or {},
+            "scenarios": raw.get("scenarios") or {},
+            "crops": raw.get("crops") or {},
+        }
+    return _ECONOMICS
 

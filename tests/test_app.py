@@ -648,3 +648,53 @@ def test_chat_ignores_foreign_farm_id(app, auth_client, monkeypatch):
     assert data["note_id"] is None
     with app.app_context():
         assert FarmNote.query.count() == 0
+
+
+def test_market_revenue_uses_quintal_to_tonne_conversion():
+    from cropapp.services.market import market_for
+
+    rice = market_for("rice")  # MSP 2300 Rs/quintal, target yield 5 t/ha = 50 quintals/ha
+    assert rice["revenue"]["per_hectare"] == 115000
+    assert rice["revenue"]["per_acre"] == round(115000 / 2.47105)
+
+    sized = market_for("rice", area_acres=2.5)
+    assert sized["revenue"]["total"] == round(sized["revenue"]["per_acre"] * 2.5)
+
+
+def test_login_next_rejects_external_redirect(client):
+    creds = {"name": "Asha", "email": "asha@example.com", "password": "secret12", "confirm": "secret12"}
+    client.post("/account/register", data=creds, follow_redirects=True)
+    client.post("/account/logout", follow_redirects=True)
+
+    external = client.post(
+        "/account/login?next=//evil.example.com", data={"email": "asha@example.com", "password": "secret12"}
+    )
+    assert external.status_code == 302
+    assert "evil.example.com" not in external.headers["Location"]
+
+    client.post("/account/logout", follow_redirects=True)
+    local = client.post(
+        "/account/login?next=/farms", data={"email": "asha@example.com", "password": "secret12"}
+    )
+    assert local.status_code == 302
+    assert local.headers["Location"].endswith("/farms")
+
+
+def test_chat_rate_limit_blocks_bursts():
+    from cropapp import create_app
+
+    app = create_app(
+        {
+            "TESTING": True,
+            "WTF_CSRF_ENABLED": False,
+            "SQLALCHEMY_DATABASE_URI": "sqlite:///:memory:",
+            "GEMINI_API_KEY": "",
+            "AI_RATE_LIMIT_PER_MINUTE": 2,
+        }
+    )
+    burst_client = app.test_client()
+    assert burst_client.post("/api/chat", json={"message": "hi"}).status_code == 200
+    assert burst_client.post("/api/chat", json={"message": "hi"}).status_code == 200
+    blocked = burst_client.post("/api/chat", json={"message": "hi"})
+    assert blocked.status_code == 429
+    assert blocked.get_json()["error"] == "rate_limited"

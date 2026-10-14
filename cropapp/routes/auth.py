@@ -1,14 +1,25 @@
-from flask import Blueprint, flash, redirect, render_template, request, session, url_for
+from flask import Blueprint, current_app, flash, redirect, render_template, request, session, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
 from cropapp.extensions import db
 from cropapp.models import User
+from cropapp.services import demo as demo_service
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/account")
 
 
 def _valid_email(email):
     return "@" in email and "." in email.split("@")[-1] and len(email) <= 255
+
+
+def _safe_next(target):
+    """Only allow same-site relative paths; reject scheme and protocol-relative redirects."""
+    if not target:
+        return None
+    target = target.strip()
+    if not target.startswith("/") or target[1:2] in ("/", "\\"):
+        return None
+    return target
 
 
 def _t(en_text, mr_text):
@@ -69,9 +80,39 @@ def login():
         if user.language in ("en", "mr"):
             session["language"] = user.language
         flash(_t(f"Welcome back, {user.greeting}.", f"पुन्हा स्वागत, {user.greeting}."), "success")
-        target = request.args.get("next") or url_for("main.index")
-        return redirect(target if target.startswith("/") else url_for("main.index"))
+        target = _safe_next(request.args.get("next")) or url_for("main.index")
+        return redirect(target)
     return render_template("auth/login.html", form={})
+
+
+@auth_bp.route("/demo", methods=["GET", "POST"])
+def demo_login():
+    """Log into the shared, pre-seeded demo account (no credentials needed)."""
+    if not current_app.config.get("DEMO_MODE_ENABLED", True):
+        flash(_t("The demo is switched off on this deployment.", "या तैनातीवर डेमो बंद आहे."), "warning")
+        return redirect(url_for("main.index"))
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
+    try:
+        user, created = demo_service.get_or_create_demo_user()
+        if created:
+            demo_service.seed_demo(current_app, user)
+        login_user(user)
+        if user.language in ("en", "mr"):
+            session["language"] = user.language
+        flash(
+            _t(
+                "You are exploring the demo account. Feel free to click around - nothing here is your real data.",
+                "तुम्ही डेमो खाते पाहत आहात. मोकळेपणाने फिरून पाहा - हा तुमचा खरा डेटा नाही.",
+            ),
+            "info",
+        )
+    except Exception:  # seeding must never take down the demo route
+        current_app.logger.exception("Demo seeding failed")
+        db.session.rollback()
+        flash(_t("Could not prepare the demo right now. Please try again.", "आत्ता डेमो तयार करता आला नाही. पुन्हा प्रयत्न करा."), "danger")
+        return redirect(url_for("main.index"))
+    return redirect(url_for("main.index"))
 
 
 @auth_bp.route("/logout", methods=["POST"])

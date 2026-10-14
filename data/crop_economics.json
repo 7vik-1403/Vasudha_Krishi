@@ -1,0 +1,44 @@
+{
+  "_meta": {
+    "note": "Indicative INPUT-COST assumptions for the profitability calculator. These are editable planning figures (seed, labour and miscellaneous field costs per hectare), NOT market prices and NOT a yield claim. Market prices come from msp.csv and target yields from crop_npk_requirements.csv. Adjust every number to your own local rates and experience.",
+    "source": "Indicative planning assumptions for this app (edit data/crop_economics.json to your local dealer / labour rates)",
+    "currency": "INR",
+    "basis": "per hectare unless stated",
+    "updated": "2026-10-14"
+  },
+  "defaults": {
+    "seed_per_ha": 6000,
+    "labor_per_ha": 14000,
+    "other_per_ha": 6000,
+    "irrigation_event_cost_per_ha": 700
+  },
+  "scenarios": {
+    "worst":    {"yield_factor": 0.7, "price_factor": 0.85, "label_en": "Worst case", "label_mr": "सर्वात वाईट"},
+    "expected": {"yield_factor": 1.0, "price_factor": 1.0,  "label_en": "Expected",   "label_mr": "अपेक्षित"},
+    "best":     {"yield_factor": 1.2, "price_factor": 1.1,  "label_en": "Best case",  "label_mr": "सर्वोत्तम"}
+  },
+  "crops": {
+    "rice":        {"seed_per_ha": 2000,  "labor_per_ha": 18000, "other_per_ha": 8000},
+    "maize":       {"seed_per_ha": 2500,  "labor_per_ha": 14000, "other_per_ha": 6000},
+    "chickpea":    {"seed_per_ha": 4000,  "labor_per_ha": 10000, "other_per_ha": 4000},
+    "lentil":      {"seed_per_ha": 3500,  "labor_per_ha": 9000,  "other_per_ha": 3500},
+    "blackgram":   {"seed_per_ha": 3000,  "labor_per_ha": 9000,  "other_per_ha": 3500},
+    "mungbean":    {"seed_per_ha": 3000,  "labor_per_ha": 9000,  "other_per_ha": 3500},
+    "pigeonpeas":  {"seed_per_ha": 2500,  "labor_per_ha": 9000,  "other_per_ha": 4000},
+    "mothbeans":   {"seed_per_ha": 2000,  "labor_per_ha": 8000,  "other_per_ha": 3000},
+    "kidneybeans": {"seed_per_ha": 5000,  "labor_per_ha": 12000, "other_per_ha": 5000},
+    "cotton":      {"seed_per_ha": 4500,  "labor_per_ha": 16000, "other_per_ha": 7000},
+    "jute":        {"seed_per_ha": 3000,  "labor_per_ha": 14000, "other_per_ha": 5000},
+    "coconut":     {"seed_per_ha": 12000, "labor_per_ha": 20000, "other_per_ha": 9000},
+    "coffee":      {"seed_per_ha": 10000, "labor_per_ha": 22000, "other_per_ha": 8000},
+    "apple":       {"seed_per_ha": 20000, "labor_per_ha": 30000, "other_per_ha": 12000},
+    "banana":      {"seed_per_ha": 25000, "labor_per_ha": 28000, "other_per_ha": 12000},
+    "grapes":      {"seed_per_ha": 30000, "labor_per_ha": 35000, "other_per_ha": 15000},
+    "mango":       {"seed_per_ha": 15000, "labor_per_ha": 20000, "other_per_ha": 9000},
+    "muskmelon":   {"seed_per_ha": 6000,  "labor_per_ha": 14000, "other_per_ha": 6000},
+    "orange":      {"seed_per_ha": 18000, "labor_per_ha": 22000, "other_per_ha": 9000},
+    "papaya":      {"seed_per_ha": 15000, "labor_per_ha": 24000, "other_per_ha": 10000},
+    "pomegranate": {"seed_per_ha": 15000, "labor_per_ha": 22000, "other_per_ha": 9000},
+    "watermelon":  {"seed_per_ha": 5000,  "labor_per_ha": 14000, "other_per_ha": 6000}
+  }
+}

@@ -21,14 +21,63 @@ The Crop Recommendation System leverages cutting-edge technology, including mach
 - **Crop recommendation** — retrained scikit-learn model (Gaussian Naive Bayes, see
   `model_report.json`) over N, P, K, temperature, humidity, pH and rainfall, returning the crop,
   top-3 alternatives and confidence.
+- **7-day weather & advisories** — live Open-Meteo forecast for the pinned field with bilingual
+  irrigation / spray / heat-stress advisories (`cropapp/services/weather.py`, `/api/forecast`). No
+  key required; the panel hides itself gracefully when offline.
+- **Leaf-photo disease scan** — upload a leaf photo and Gemini vision returns the likely
+  disease/pest/deficiency with an organic + chemical action plan (`cropapp/services/disease.py`,
+  `/api/disease`). Needs `GEMINI_API_KEY`; without it you get a friendly "switched off" message.
+  A successful scan is saved to the field as a note (`source="disease"`).
+- **Farm analytics** — an aggregate dashboard across all your fields: KPIs, expenses by category and
+  by month, crops by area, task completion and soil N-P-K, each chart theme-aware
+  (`cropapp/services/analytics.py`, `/analytics`).
+- **Model & data transparency page** — a public `/model` page that renders `model_report.json`: the
+  candidate leaderboard, confusion matrix, feature list and the probability-calibration experiment.
+- **Shareable field plan** — generate a read-only public link (`/share/<token>`) that shows a field's
+  crop plan, fertilizer dose, water plan, market estimate and schedule — without exposing private
+  notes or expenses. Revoke it any time from the field header.
+- **One-click demo** — a shared `demo@vasudha.local` account pre-seeded with two farms (Punjab canal
+  field, Maharashtra borewell field), full recommendations, tasks and field history, so the app can be
+  toured without network or setup (`/account/demo`, `cropapp/services/demo.py`).
 - **Fertilizer doses** — urea / DAP / MOP in kg per hectare, kg per acre and total for your field
   size, split across basal, tillering and tablet stages, plus MSP reference and the local crop
   calendar (sowing, irrigation, pest windows, harvest).
+- **Profitability estimate** — revenue (MSP × reference yield), itemised costs (seed, fertilizer,
+  spray, irrigation, labour, other) and net profit per hectare / acre / field, shown for worst /
+  expected / best cases and compared across the crop shortlist. Costs come from editable planning
+  assumptions in `data/crop_economics.json`; every panel is labelled an estimate, not a market quote.
+- **Explainable ranking** — each shortlisted crop shows its model probability, agronomic fit score
+  (temperature / rainfall / pH windows) and water penalty as separate factors, so the combined score
+  can be explained rather than just asserted. The model score is shown as an uncalibrated
+  classifier probability.
+- **Climate-risk notes** — rainfall deficit/excess, dry spells, heat/cold stress and crop-specific
+  window mismatches, tagged by basis (IMD monthly normal, most recent observed month, or derived).
+  There is no live forecast in this deployment and the panel says so.
+- **Irrigation planner** — seasonal water need, an indicative number of irrigation events and rough
+  cost from the crop's water data and your declared source.
+- **Field history & actual-vs-predicted** — log dated soil tests, expenses, harvests, irrigation and
+  observations per farm; the app charts the soil trend, totals expenses and harvests, and compares a
+  recorded harvest with the estimate stored when the recommendation was saved.
+- **Farm workspace** — every farm opens as a tabbed workspace (Overview, Crops, Soil & nutrition,
+  Irrigation, Calendar & tasks, Expenses, AI assistant). The active tab is kept in the `?tab=` URL so
+  links and refreshes stay put, and each tab groups only related content instead of one long column.
+- **Farm expense manager** — record categorised expenses (seeds, fertilizers, pesticides, labour,
+  irrigation, energy, equipment, land prep, transport, other) with date, crop, season, vendor and
+  payment method; edit or delete them inline. The summary breaks spend down by category, crop, season
+  and month, and per-crop / per-season / whole-farm budgets warn as you approach and exceed them.
+  Recorded spend replaces the matching line in the crop profitability estimate (without double
+  counting) to show projected and — once a harvest is logged — true net profit.
+- **What-if simulator** — re-estimate the saved crop under changed rainfall, irrigation days, price
+  factor, yield factor and fertilizer-cost factor, side by side with the saved baseline, without
+  altering the saved recommendation.
 - **Farmer account** — save multiple farms, each with its own soil readings, recommendation and a
   per-farm task list you can tick off as you go.
 - **AI chat assistant** — Gemini-powered advisor in English or Marathi that answers questions with
   concrete numbers and can schedule fertilizer / pesticide / irrigation tasks straight onto your
-  farms. Works without a key too: it falls back to the locally generated calendar and doses.
+  farms. Its context now includes the profit estimate, climate risks and your logged field history.
+  Retries transient errors and falls through to backup models when the primary one is overloaded, and
+  rate-limits per user/IP. Works without a key too: it falls back to the locally generated calendar
+  and doses.
 - **English / Marathi** — switch the whole interface from the nav bar.
 
 ## Setup
@@ -39,11 +88,16 @@ venv\Scripts\activate        # Windows
 pip install -r requirements.txt
 ```
 
-Create a `.env` (see `.env.example`) if you want the AI chat:
+Copy `.env.example` to `.env` (`.env` is gitignored):
 
 ```
-GEMINI_API_KEY=your-key-from-https://aistudio.google.com/apikey
+SECRET_KEY=<random hex>        # signs session cookies; set this in production
+GEMINI_API_KEY=your-key-from-https://aistudio.google.com/apikey   # optional, enables AI chat
 ```
+
+If `SECRET_KEY` is left unset the app falls back to a built-in development value and logs a
+warning on start. Other optional settings (model fallbacks, chat rate limit, dev-server host/port)
+are documented in `.env.example`.
 
 ## Run
 
@@ -54,25 +108,44 @@ python app.py
 The database is created automatically on first start (`instance/app.db`), or run
 `flask --app app init-db` to create it explicitly. Open http://127.0.0.1:5000
 
+The development server starts with debug mode **off**; set `FLASK_DEBUG=1` in `.env` to turn it on
+locally. Override the bind address with `FLASK_HOST` / `FLASK_PORT`.
+
 ## Tests
 
 ```bash
 python -m pytest tests -q
 ```
 
-The suite covers the resolver, prediction, fertilizer maths, scheduler, auth, farms and the chat
-endpoint (Gemini is mocked). For a quick live check against the real network APIs:
+The suite covers the resolver, prediction, fertilizer maths, scheduler, auth, farms, the chat
+endpoint (Gemini is mocked), the new `/api/forecast` and `/api/disease` endpoints, the demo account,
+the analytics and model pages, and the public share links. For a quick live check against the real
+network APIs:
 
 ```bash
 python scripts/t_resolve.py      # district resolution + rainfall normals
-python scripts/t_smoke.py        # full register → predict → save farm flow
+python scripts/t_smoke.py        # register → predict → save farm → share → demo/analytics → model
 ```
 
 ## Retraining the model
 
 ```bash
-python train.py
+python train.py                        # evaluate all candidates, ship the best
+python train.py --model rf             # force one candidate
+python train.py --calibration isotonic # calibration method (default sigmoid)
+python train.py --no-calibrate         # ship the raw estimator
 ```
 
-Compares six classifiers with 5-fold cross-validation, writes the winner to `model.pkl` and the
-scores to `model_report.json`. The previous model is kept as `model_gaussianNB_v1.pkl`.
+Compares seven classifiers (Gaussian Naive Bayes, Decision Tree, Random Forest, Histogram Gradient
+Boosting, RBF SVM, KNN, Logistic Regression) with stratified 5-fold cross-validation and reports
+hold-out accuracy, macro precision / recall / F1, balanced accuracy and top-3 accuracy for each. It
+drops exact duplicate rows before splitting, then attempts probability calibration on the winner and
+**ships the calibrated model only when it improves log-loss and Brier score** — on the well-separated
+public dataset calibration does not help, so the raw estimator is kept and the before/after numbers
+are recorded in `model_report.json` as an auditable experiment. The winner is written to `model.pkl`
+and all metrics to `model_report.json`, which the `/model` page renders.
+
+## Configuration flags
+
+Beyond `.env`, behaviour can be toggled with `DISEASE_DETECTION_ENABLED`, `DISEASE_MAX_IMAGE_BYTES`,
+`DEMO_MODE_ENABLED` and `SEED_DEMO_ON_START` (see `cropapp/config.py`).

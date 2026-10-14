@@ -1,5 +1,5 @@
 {
-  "trained_at": "2026-10-09T13:08:54Z",
+  "trained_at": "2026-10-14T10:15:47Z",
   "sklearn_version": "1.7.1",
   "dataset_rows": 2200,
   "classes": [
@@ -39,59 +39,117 @@
     {
       "id": "gnb",
       "label": "Gaussian Naive Bayes",
-      "cv_accuracy_mean": 0.9943,
-      "cv_accuracy_std": 0.0051,
+      "cv_accuracy_mean": 0.9949,
+      "cv_accuracy_std": 0.0042,
       "holdout_accuracy": 0.9955,
-      "holdout_macro_f1": 0.9954
+      "holdout_macro_f1": 0.9954,
+      "holdout_macro_precision": 0.9959,
+      "holdout_macro_recall": 0.9955,
+      "holdout_balanced_accuracy": 0.9955,
+      "holdout_top3_accuracy": 1.0
     },
     {
       "id": "rf",
       "label": "Random Forest",
-      "cv_accuracy_mean": 0.9955,
-      "cv_accuracy_std": 0.0043,
+      "cv_accuracy_mean": 0.9943,
+      "cv_accuracy_std": 0.0048,
       "holdout_accuracy": 0.9932,
-      "holdout_macro_f1": 0.9932
+      "holdout_macro_f1": 0.9932,
+      "holdout_macro_precision": 0.9935,
+      "holdout_macro_recall": 0.9932,
+      "holdout_balanced_accuracy": 0.9932,
+      "holdout_top3_accuracy": 1.0
     },
     {
       "id": "svc",
       "label": "RBF SVM",
-      "cv_accuracy_mean": 0.9852,
-      "cv_accuracy_std": 0.0061,
+      "cv_accuracy_mean": 0.9824,
+      "cv_accuracy_std": 0.0049,
       "holdout_accuracy": 0.9886,
-      "holdout_macro_f1": 0.9887
+      "holdout_macro_f1": 0.9887,
+      "holdout_macro_precision": 0.9896,
+      "holdout_macro_recall": 0.9886,
+      "holdout_balanced_accuracy": 0.9886,
+      "holdout_top3_accuracy": 1.0
+    },
+    {
+      "id": "hgb",
+      "label": "Histogram Gradient Boosting",
+      "cv_accuracy_mean": 0.9926,
+      "cv_accuracy_std": 0.0043,
+      "holdout_accuracy": 0.9886,
+      "holdout_macro_f1": 0.9886,
+      "holdout_macro_precision": 0.9896,
+      "holdout_macro_recall": 0.9886,
+      "holdout_balanced_accuracy": 0.9886,
+      "holdout_top3_accuracy": 0.9977
     },
     {
       "id": "dt",
       "label": "Decision Tree",
       "cv_accuracy_mean": 0.9852,
-      "cv_accuracy_std": 0.0075,
+      "cv_accuracy_std": 0.0068,
       "holdout_accuracy": 0.9795,
-      "holdout_macro_f1": 0.9794
+      "holdout_macro_f1": 0.9794,
+      "holdout_macro_precision": 0.9806,
+      "holdout_macro_recall": 0.9795,
+      "holdout_balanced_accuracy": 0.9795,
+      "holdout_top3_accuracy": 0.9886
     },
     {
       "id": "knn",
       "label": "K-Nearest Neighbours",
-      "cv_accuracy_mean": 0.9659,
-      "cv_accuracy_std": 0.0082,
+      "cv_accuracy_mean": 0.9653,
+      "cv_accuracy_std": 0.0121,
       "holdout_accuracy": 0.9795,
-      "holdout_macro_f1": 0.9793
+      "holdout_macro_f1": 0.9793,
+      "holdout_macro_precision": 0.9804,
+      "holdout_macro_recall": 0.9795,
+      "holdout_balanced_accuracy": 0.9795,
+      "holdout_top3_accuracy": 0.9977
     },
     {
       "id": "logreg",
       "label": "Multinomial Logistic Regression",
-      "cv_accuracy_mean": 0.9676,
-      "cv_accuracy_std": 0.0113,
+      "cv_accuracy_mean": 0.9682,
+      "cv_accuracy_std": 0.0066,
       "holdout_accuracy": 0.9727,
-      "holdout_macro_f1": 0.9725
+      "holdout_macro_f1": 0.9725,
+      "holdout_macro_precision": 0.974,
+      "holdout_macro_recall": 0.9727,
+      "holdout_balanced_accuracy": 0.9727,
+      "holdout_top3_accuracy": 1.0
     }
   ],
   "best": {
     "id": "gnb",
     "label": "Gaussian Naive Bayes",
-    "cv_accuracy_mean": 0.9943,
-    "cv_accuracy_std": 0.0051,
+    "cv_accuracy_mean": 0.9949,
+    "cv_accuracy_std": 0.0042,
     "holdout_accuracy": 0.9955,
-    "holdout_macro_f1": 0.9954
+    "holdout_macro_f1": 0.9954,
+    "holdout_macro_precision": 0.9959,
+    "holdout_macro_recall": 0.9955,
+    "holdout_balanced_accuracy": 0.9955,
+    "holdout_top3_accuracy": 1.0
+  },
+  "shipped": {
+    "id": "gnb",
+    "label": "Gaussian Naive Bayes",
+    "calibrated": false,
+    "calibration_method": "sigmoid"
+  },
+  "calibration": {
+    "method": "sigmoid",
+    "cv": 5,
+    "applied": false,
+    "holdout_accuracy": 0.9932,
+    "holdout_macro_f1": 0.9932,
+    "log_loss_before": 0.0156,
+    "log_loss_after": 0.0858,
+    "brier_before": 0.0096,
+    "brier_after": 0.0146,
+    "reason": "Calibration did not improve log-loss/Brier on this dataset; the raw estimator was kept."
   },
   "holdout_accuracy": 0.9955,
   "holdout_macro_f1": 0.9954,

@@ -4,8 +4,8 @@ import csv
 import os
 
 from cropapp.services.datasets import DATA_DIR, calendar_for, load_requirements, msp_for
+from cropapp.services.units import ACRES_PER_HA
 
-ACRES_PER_HA = 2.47105
 _HISTORY = None
 
 HISTORY_SOURCE = "CACP notified MSP (Agriculture Marketing Division, Govt. of India)"
@@ -104,7 +104,7 @@ def _revenue(crop, price, area_acres):
     yield_t_ha = requirement.get("target_yield_t_ha")
     if not price or not yield_t_ha:
         return None
-    per_ha = price * yield_t_ha * 100  # quintal = 100 kg, yield is t/ha
+    per_ha = price * yield_t_ha * 10  # yield is t/ha; 1 t = 10 quintals, so price (Rs/quintal) * 10 * yield
     per_acre = round(per_ha / ACRES_PER_HA)
     return {
         "yield_t_ha": yield_t_ha,

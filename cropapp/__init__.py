@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template
 from sqlalchemy import inspect, text
 
-from cropapp.config import BASE_DIR, Config
+from cropapp.config import BASE_DIR, DEFAULT_SECRET_KEY, Config
 from cropapp.extensions import db, init_extensions
 
 # Columns added after the first release - patched into an existing sqlite file.
@@ -14,12 +14,19 @@ NEW_COLUMNS = {
         "water_source": "VARCHAR(40)",
         "water_days": "FLOAT",
         "water_note": "VARCHAR(255)",
+        "share_token": "VARCHAR(32)",
     },
     "recommendations": {
         "crop_category": "VARCHAR(40)",
         "water_json": "TEXT",
         "spray_json": "TEXT",
         "excluded_json": "TEXT",
+    },
+    "farm_records": {
+        "category": "VARCHAR(40)",
+        "season": "VARCHAR(40)",
+        "vendor": "VARCHAR(120)",
+        "payment_method": "VARCHAR(30)",
     },
 }
 
@@ -31,6 +38,12 @@ def create_app(config_overrides=None):
     app.config.from_object(Config)
     if config_overrides:
         app.config.update(config_overrides)
+
+    if app.config.get("SECRET_KEY") == DEFAULT_SECRET_KEY:
+        app.logger.warning(
+            "SECRET_KEY is the built-in development default - set SECRET_KEY in .env before deploying."
+        )
+    app.extensions.setdefault("ai_rate_limit", {})
 
     init_extensions(app)
 

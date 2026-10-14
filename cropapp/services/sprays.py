@@ -5,8 +5,8 @@ indicative cost, and offers a cheaper or bio alternative for each so the farmer 
 """
 
 from cropapp.services.datasets import load_crop_sprays, load_spray_products
+from cropapp.services.units import ACRES_PER_HA
 
-ACRES_PER_HA = 2.47105
 DEFAULT_APPLICATIONS = 2
 
 

@@ -67,7 +67,7 @@ def predict(features):
     return ranked
 
 
-def recommend(features, top_n=3, allowed_crops=None, penalties=None, exclude=None):
+def recommend(features, top_n=3, allowed_crops=None, penalties=None, exclude=None, agronomic_scores=None):
     """Rank crops for the field, optionally restricted to a group and penalised for poor fit.
 
     allowed_crops: iterable of crop names - when given, crops outside the group are dropped
@@ -76,12 +76,16 @@ def recommend(features, top_n=3, allowed_crops=None, penalties=None, exclude=Non
         raw so the displayed confidence stays comparable with the plain model output.
     exclude: iterable of crop names that cannot grow here (agro-climatic suitability fails);
         these are never recommended.
+    agronomic_scores: {crop: 0..1} climate/soil fit used only as a tie-breaker when the
+        classifier is inconclusive (see below) so an over-confident one-hot model cannot
+        hand back an arbitrary crop once its top pick is agro-climatically excluded.
     """
     ranked = predict(features)
     classes = len(ranked)
     excluded = {crop for crop in (exclude or [])}
+    agronomic_scores = agronomic_scores or {}
 
-    selected = []
+    candidates = []  # (crop, raw_probability, weight)
     for crop, prob in ranked:
         if crop in excluded:
             continue
@@ -91,26 +95,43 @@ def recommend(features, top_n=3, allowed_crops=None, penalties=None, exclude=Non
         if penalties:
             weight *= penalties.get(crop, 1.0)
         if weight > 0:
-            selected.append((crop, prob * weight))
+            candidates.append((crop, prob, weight))
 
     note = None
-    if not selected:
-        fallback = [(crop, prob) for crop, prob in ranked if crop not in excluded]
-        selected = fallback[:top_n]
+    if not candidates:
+        candidates = [(crop, prob, 1.0) for crop, prob in ranked if crop not in excluded][:top_n]
         note = (
             "No crop from your chosen group fits this field's soil and climate - "
             "showing the closest crops overall."
         )
+    if not candidates:
+        candidates = [(crop, prob, 1.0) for crop, prob in ranked[:top_n]]
+
+    best_prob = max((prob for _, prob, _ in candidates), default=0.0)
+    degenerate = best_prob < 0.01
+    if degenerate and agronomic_scores:
+        # Renormalise the agronomic x water fit into a probability-like score.
+        weights = [
+            (crop, max(agronomic_scores.get(crop, 1.0), 0.0) * weight)
+            for crop, _, weight in candidates
+        ]
+        total = sum(w for _, w in weights) or 1.0
+        scored = [(crop, w / total) for crop, w in weights]
+        note = note or (
+            "The classifier is inconclusive for this field, so crops were ranked by "
+            "agro-climatic and water fit instead of the raw model score."
+        )
     else:
-        selected.sort(key=lambda item: item[1], reverse=True)
+        scored = [(crop, prob * weight) for crop, prob, weight in candidates]
+    scored.sort(key=lambda item: item[1], reverse=True)
 
-    if not selected:
-        selected = ranked[:top_n]
+    if not scored:
+        scored = [(crop, prob) for crop, prob in ranked[:top_n]]
 
-    group_total = sum(prob for _, prob in selected) or 1.0
-    top_crop, top_prob = selected[0]
+    group_total = sum(prob for _, prob in scored) or 1.0
+    top_crop, top_prob = scored[0]
     top = []
-    for crop, prob in selected[:top_n]:
+    for crop, prob in scored[:top_n]:
         top.append(
             {
                 "crop": crop,

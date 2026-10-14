@@ -10,11 +10,11 @@
 <div class="page-head">
     <div class="container-xl page-head-inner">
         <div>
-            <div class="eyebrow">{{ 'सूचना' if lang == 'mr' else 'Recommendation' }}</div>
-            <h1>{{ 'तुमच्या शेतासाठी पीक निवडा' if lang == 'mr' else 'Pick the field, tell us your water' }}</h1>
+            <div class="eyebrow">{{ 'पीक सल्ला' if lang == 'mr' else 'Get crop advice' }}</div>
+            <h1>{{ 'तुमच्या शेतासाठी पीक निवडा' if lang == 'mr' else 'Find the right crop for your field' }}</h1>
             <p class="sub">
-                {{ 'मॅपवर पिन टाका, पाण्याची उपलब्धता नोंदवा आणि पीक, खत आणि कॅलेंडर मिळवा' if lang == 'mr'
-                   else 'Drop a pin on the map - we fetch soil and rainfall for that exact point, then match it with your water and a crop group.' }}
+                {{ 'नकाशावर तुमचे शेत निवडा, पाण्याची माहिती द्या - आम्ही पीक, खत आणि कामांचे वेळापत्रक तयार करून देतो.' if lang == 'mr'
+                   else 'Pick your field on the map and tell us about your water - we prepare the crop, the fertilizer to buy and the work calendar for you.' }}
             </p>
         </div>
         <div class="head-actions">
@@ -84,7 +84,7 @@
             {# ------------------------------------------------ form column #}
             <div class="form-card">
                 <h1>{{ 'शेत माहिती' if lang == 'mr' else 'Your field, your water' }}</h1>
-                <p class="lede">{{ 'हे तपशील पुढील सर्व शिफारसी बदलतात.' if lang == 'mr' else 'These four inputs change the crop ranking, dose and schedule.' }}</p>
+                <p class="lede">{{ 'हे तपशील पीक, खत आणि कामांचे वेळापत्रक ठरवतात.' if lang == 'mr' else 'These few answers change which crop we pick, the fertilizer dose and the calendar.' }}</p>
 
                 <div class="form-section">
                     <div class="form-step"><span class="step-no">1</span> {{ 'हंगाम' if lang == 'mr' else 'Season' }}</div>
@@ -121,8 +121,8 @@
                         {% endfor %}
                     </div>
                     <div class="f-hint">
-                        {{ 'गट निवडल्यास त्या गटातील पीकांपुरतीच शिफारस होईल. भाजीपाला मॉडेलमध्ये नाही - त्यासाठी नियम-आधारित सूचना मिळेल.'
-                           if lang == 'mr' else 'Pick a group to only rank crops inside it. Vegetables run on the rule engine, not the ML model.' }}
+                        {{ 'गट निवडल्यास फक्त त्या गटातील पिके दिसतील. भाजीपाल्यासाठी हंगाम व पाण्यावर आधारित सूचना मिळते.'
+                           if lang == 'mr' else 'Pick a group to only see crops from that group. Vegetables are suggested from the season and your water.' }}
                     </div>
                 </div>
 
@@ -147,9 +147,9 @@
                         </div>
                         <div class="water-note">
                             <i class="bi bi-droplet-half"></i>
-                            <span>{{ 'पावसाचा हिशोब हा हवामान सरासरी आहे - तो तुमच्या शेतासाठी पाणी ठरवत नाही. विहीर, बोअरवेल, कालवा किंवा ठिबक असल्यास तेच नोंदवा.'
+                            <span>{{ 'तुम्ही प्रत्यक्षात वापरत असलेले पाणी सांगा - विहीर, बोअरवेल, कालवा किंवा ठिबक. पुढे दिसणारा पाऊस हा परिसराचा सरासरी आकडा आहे.'
                                    if lang == 'mr'
-                                   else 'Rainfall shown later is a district climate average, not your water supply. Tell us the well, borewell, canal or drip you actually run.' }}</span>
+                                   else 'Tell us the water you actually use - well, borewell, canal or drip. Rainfall shown later is only an area average.' }}</span>
                         </div>
                         <div class="mt-2">
                             <label class="f-label" for="water-note">{{ 'टीप (ऐक्या)' if lang == 'mr' else 'Note (optional)' }}</label>

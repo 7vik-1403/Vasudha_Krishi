@@ -6,6 +6,7 @@ days a week they can irrigate, and this module compares that with the crop's nee
 """
 
 from cropapp.services.datasets import load_vegetables, water_for
+from cropapp.services.units import to_marathi_number
 
 NEED_DAYS_PER_WEEK = {"low": 1, "medium": 3, "high": 5}
 NEED_LABELS = {"low": "Low", "medium": "Medium", "high": "High"}
@@ -152,4 +153,4 @@ def penalty_for(report):
 
 
 def mr_days(value):
-    return str(value).translate(str.maketrans("0123456789.", "०१२३४५६७८९."))
+    return to_marathi_number(value)

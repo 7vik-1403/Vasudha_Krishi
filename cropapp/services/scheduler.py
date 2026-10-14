@@ -1,17 +1,15 @@
 from datetime import date, datetime, timedelta
 
 from cropapp.models import FarmTask
-from cropapp.services.datasets import calendar_for, load_vegetables
 from cropapp.services import water as water_service
+from cropapp.services.datasets import calendar_for, load_vegetables
+from cropapp.services.units import to_marathi_number
 
-DEV_DIGITS = str.maketrans("0123456789.", "०१२३४५६७८९.")
-
-ACRES_PER_HA = 2.47105
 MAX_IRRIGATION_TASKS = 12
 
 
 def mr_number(value):
-    return str(value).translate(DEV_DIGITS)
+    return to_marathi_number(value)
 
 
 def _round(value):

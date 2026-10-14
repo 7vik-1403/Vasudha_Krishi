@@ -11,6 +11,8 @@ from cropapp.services.datasets import calendar_for, load_suitability, suitabilit
 # How far outside a window a value may sit before it is treated as a hard "cannot grow" fail.
 TEMP_TOLERANCE = 2.0
 RAIN_DRY_FACTOR = 0.3
+PH_TOLERANCE = 1.5
+RAIN_WET_FACTOR = 1.6
 
 
 def _label(crop, lang="en"):
@@ -18,6 +20,19 @@ def _label(crop, lang="en"):
     if lang == "mr":
         return calendar.get("label_mr") or crop
     return calendar.get("label_en") or crop
+
+
+def _membership(x, lo, hi, low_soft, high_soft):
+    """Smooth 0..1 fit: 1 inside the [lo, hi] plateau, tapering to 0 across the soft margin."""
+    if x < lo:
+        if low_soft <= 0:
+            return 0.0, "low"
+        return max(0.0, min(1.0, (x - (lo - low_soft)) / low_soft)), "low"
+    if x > hi:
+        if high_soft <= 0:
+            return 0.0, "high"
+        return max(0.0, min(1.0, ((hi + high_soft) - x) / high_soft)), "high"
+    return 1.0, None
 
 
 def evaluate(crop, temp_c=None, rain_mm=None, ph=None):
@@ -59,16 +74,18 @@ def evaluate(crop, temp_c=None, rain_mm=None, ph=None):
             reasons_short_mr.append(
                 f"{tmin}-{tmax}\u00b0C लागतात, तुमच्याकडे {temp_c}\u00b0C"
             )
-        elif temp_c < tmin or temp_c > tmax:
-            score *= 0.5
-            reasons.append(
-                f"{_label(crop)} prefers {tmin}-{tmax}\u00b0C ({limits.get('climate_en')}); "
-                f"this month is {temp_c}\u00b0C."
-            )
-            reasons_mr.append(
-                f"{_label(crop, 'mr')}साठी {tmin}-{tmax}\u00b0C चांगले ({limits.get('climate_mr')}); "
-                f"या महिन्यात {temp_c}\u00b0C आहे."
-            )
+        else:
+            factor, _side = _membership(temp_c, tmin, tmax, TEMP_TOLERANCE, TEMP_TOLERANCE)
+            if factor < 1.0:
+                score *= factor
+                reasons.append(
+                    f"{_label(crop)} prefers {tmin}-{tmax}\u00b0C ({limits.get('climate_en')}); "
+                    f"this month is {temp_c}\u00b0C."
+                )
+                reasons_mr.append(
+                    f"{_label(crop, 'mr')}साठी {tmin}-{tmax}\u00b0C चांगले ({limits.get('climate_mr')}); "
+                    f"या महिन्यात {temp_c}\u00b0C आहे."
+                )
 
     rmin, rmax = limits.get("rain_min"), limits.get("rain_max")
     if rain_mm is not None and rmin is not None:
@@ -82,20 +99,26 @@ def evaluate(crop, temp_c=None, rain_mm=None, ph=None):
             )
             reasons_short.append(f"needs {rmin} mm+ rain, you have {rain_mm} mm")
             reasons_short_mr.append(f"{rmin} मिमी+ पाऊस लागतो, तुमच्याकडे {rain_mm} मिमी")
-        elif rmin is not None and rmax is not None and (rain_mm < rmin or rain_mm > rmax):
-            score *= 0.7
-            reasons.append(
-                f"Rainfall {rain_mm} mm is outside the {rmin}-{rmax} mm comfort range for {_label(crop)}."
-            )
-            reasons_mr.append(
-                f"पाऊस {rain_mm} मिमी हा {_label(crop, 'mr')}साठीच्या {rmin}-{rmax} मिमी मर्यादेबाहेर आहे."
-            )
+        elif rmax is not None:
+            low_soft = max(rmin * (1 - RAIN_DRY_FACTOR), 0.0)
+            high_soft = max(rmax * (RAIN_WET_FACTOR - 1), 0.0)
+            factor, _side = _membership(rain_mm, rmin, rmax, low_soft, high_soft)
+            if factor < 1.0:
+                score *= factor
+                reasons.append(
+                    f"Rainfall {rain_mm} mm is outside the {rmin}-{rmax} mm comfort range for {_label(crop)}."
+                )
+                reasons_mr.append(
+                    f"पाऊस {rain_mm} मिमी हा {_label(crop, 'mr')}साठीच्या {rmin}-{rmax} मिमी मर्यादेबाहेर आहे."
+                )
 
     pmin, pmax = limits.get("ph_min"), limits.get("ph_max")
-    if ph is not None and pmin is not None and pmax is not None and (ph < pmin or ph > pmax):
-        score *= 0.6
-        reasons.append(f"Soil pH {ph} is outside the {pmin}-{pmax} range {_label(crop)} likes.")
-        reasons_mr.append(f"मातीचा सामू {ph} हा {_label(crop, 'mr')}ला आवडणाऱ्या {pmin}-{pmax} मर्यादेबाहेर आहे.")
+    if ph is not None and pmin is not None and pmax is not None:
+        factor, _side = _membership(ph, pmin, pmax, PH_TOLERANCE, PH_TOLERANCE)
+        if factor < 1.0:
+            score *= factor
+            reasons.append(f"Soil pH {ph} is outside the {pmin}-{pmax} range {_label(crop)} likes.")
+            reasons_mr.append(f"मातीचा सामू {ph} हा {_label(crop, 'mr')}ला आवडणाऱ्या {pmin}-{pmax} मर्यादेबाहेर आहे.")
 
     return {
         "crop": crop,

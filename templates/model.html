@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% block title %}{{ 'मॉडेल' if lang == 'mr' else 'Model' }} - Vasudha Krishi{% endblock %}
+
+{% block body %}
+<section class="page-head">
+    <div class="container-xl page-head-inner">
+        <div>
+            <div class="eyebrow">{{ 'पारदर्शकता' if lang == 'mr' else 'Under the hood' }}</div>
+            <h1>{{ 'मॉडेल व डेटा' if lang == 'mr' else 'Model & data' }}</h1>
+            <p class="sub">
+                {{ 'क्रमवारीसाठी वापरलेले वर्गीकरण मॉडेल, त्याचे प्रशिक्षण व मर्यादा.' if lang == 'mr'
+                   else 'The classifier behind the ranking, how it was trained, and its limits.' }}
+            </p>
+        </div>
+        <div class="head-actions">
+            <a href="{{ url_for('main.recommend_view') }}" class="btn-ghost dark"><i class="bi bi-pin-map"></i> {{ 'शिफारस वापरून पहा' if lang == 'mr' else 'Try a recommendation' }}</a>
+        </div>
+    </div>
+</section>
+
+<div class="container-xl page-body">
+    {% if not report.available %}
+    <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-cpu"></i></div>
+        <h2>{{ 'अहवाल नाही' if lang == 'mr' else 'No training report found' }}</h2>
+        <p>{{ 'model_report.json सापडला नाही. प्रशिक्षण चालवा: python train.py' if lang == 'mr' else 'model_report.json was not found. Run the training script: python train.py' }}</p>
+        <div class="code-block">python train.py</div>
+    </div>
+    {% else %}
+
+    <div class="kpi-band">
+        <div class="kpi"><div class="label">{{ 'सर्वोत्तम मॉडेल' if lang == 'mr' else 'Best model' }}</div><div class="value" style="font-size:1.15rem;">{{ report.best.label }}</div><div class="delta">{{ report.best.id }}</div></div>
+        <div class="kpi"><div class="label">{{ 'होल्ड-आउट अचूकता' if lang == 'mr' else 'Hold-out accuracy' }}</div><div class="value">{{ (report.holdout_accuracy * 100)|round(2) }}%</div><div class="delta up"><i class="bi bi-check2"></i> macro-F1 {{ (report.holdout_macro_f1 * 100)|round(2) }}%</div></div>
+        <div class="kpi"><div class="label">{{ 'प्रशिक्षण रांगा' if lang == 'mr' else 'Training rows' }}</div><div class="value">{{ '{:,}'.format(report.dataset_rows) }}</div><div class="delta">{{ report.classes|length }} {{ 'पिके' if lang == 'mr' else 'crops' }}</div></div>
+        <div class="kpi"><div class="label">{{ 'वैशिष्ट्ये' if lang == 'mr' else 'Features' }}</div><div class="value">{{ report.features|length }}</div><div class="delta">{{ 'N P K + हवामान + माती' if lang == 'mr' else 'N P K + climate + soil' }}</div></div>
+    </div>
+
+    <div class="two-col">
+        <section class="panel">
+            <div class="panel-head">
+                <h2><i class="bi bi-trophy"></i> {{ 'उमेदवार मॉडेल' if lang == 'mr' else 'Candidate models' }}</h2>
+                <span class="panel-hint">{{ '5-फोल्ड CV अचूकता' if lang == 'mr' else '5-fold CV accuracy' }}</span>
+            </div>
+            {% for c in report.candidates_sorted %}
+            <div class="candidate-row {% if c.id == report.best.id %}best{% endif %}">
+                <span class="name">{{ c.label }}{% if c.id == report.best.id %} <i class="bi bi-star-fill" style="color:var(--sun-500)"></i>{% endif %}</span>
+                {% if c.holdout_top3_accuracy is defined and c.holdout_top3_accuracy is not none %}
+                <span class="candidate-top3" title="{{ 'शीर्ष-3 अचूकता' if lang == 'mr' else 'top-3 accuracy' }}">top-3 {{ (c.holdout_top3_accuracy * 100)|round(1) }}%</span>
+                {% endif %}
+                <span class="score">{{ (c.cv_accuracy_mean * 100)|round(2) }}%</span>
+                <span class="candidate-bar"><span style="width:{{ (c.cv_accuracy_mean * 100)|round(1) }}%"></span></span>
+            </div>
+            {% endfor %}
+            <p class="heatmap-note">{{ 'स्कोअर 5-फोल्ड क्रॉस-व्हॅलिडेशन अचूकता; top-3 म्हणजे योग्य पीक अव्वल तीनत असल्याचे प्रमाण.' if lang == 'mr'
+               else 'Score is 5-fold cross-validation accuracy; top-3 is how often the true crop is among the three highest-probability picks.' }}</p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h2><i class="bi bi-sliders"></i> {{ 'वैशिष्ट्ये व माहिती' if lang == 'mr' else 'Features & provenance' }}</h2>
+            </div>
+            <ul class="feature-list">
+                {% for f in report.feature_labels %}
+                <li><i class="bi bi-dot"></i><span>{{ f.label_mr if lang == 'mr' else f.label_en }}</span><code>{{ f.key }}</code></li>
+                {% endfor %}
+            </ul>
+            <div class="meta-rows">
+                <div><span>{{ 'प्रशिक्षित' if lang == 'mr' else 'Trained' }}</span><strong>{{ report.trained_at }}</strong></div>
+                <div><span>scikit-learn</span><strong>{{ report.sklearn_version }}</strong></div>
+                {% if report.dataset_path %}<div><span>{{ 'डेटासेट' if lang == 'mr' else 'Dataset' }}</span><strong>{{ report.dataset_path }}</strong></div>{% endif %}
+                <div><span>{{ 'मॉडेल फाइल' if lang == 'mr' else 'Model file' }}</span><strong>{{ 'model.pkl मिळाली' if report.model_present else ('model.pkl नाही' if lang == 'mr' else 'model.pkl missing') }}</strong></div>
+            </div>
+            <div class="code-block">python train.py</div>
+        </section>
+    </div>
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="bi bi-grid-3x3"></i> {{ 'कन्फ्यूजन मॅट्रिक्स' if lang == 'mr' else 'Confusion matrix' }}</h2>
+            <span class="panel-hint">{{ 'होल्ड-आउट संच' if lang == 'mr' else 'hold-out set' }}</span>
+        </div>
+        <div class="heatmap-wrap">
+            <table class="heatmap">
+                <thead>
+                    <tr>
+                        <th class="row-head"></th>
+                        {% for label in report.confusion_labels %}<th title="{{ label }}">{{ loop.index }}</th>{% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in report.confusion_matrix %}
+                    {% set rowmax = (row|max) or 1 %}
+                    <tr>
+                        <th class="row-head" title="{{ report.confusion_labels[loop.index0] }}">{{ loop.index }} {{ report.confusion_labels[loop.index0] }}</th>
+                        {% for value in row %}
+                        <td style="background: rgba(22,163,74,{{ (value / rowmax * 0.92)|round(3) }})"
+                            title="{{ report.confusion_labels[loop.index0] }}">
+                            {{ value if value else '' }}
+                        </td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="heatmap-note">{{ 'पंक्ती = खरे पीक, स्तंभ = अंदाजित. आकडे शून्य असल्यास रिकामे.' if lang == 'mr' else 'Rows = true crop, columns = predicted. Blank means zero.' }}</p>
+    </section>
+
+    {% if report.calibration %}
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="bi bi-activity"></i> {{ 'संभाव्यता कॅलिब्रेशन' if lang == 'mr' else 'Probability calibration' }}</h2>
+            <span class="panel-hint">{{ report.calibration.method }} · {{ report.calibration.cv }}-fold</span>
+        </div>
+        <div class="kpi-band" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 12px;">
+            <div class="kpi"><div class="label">{{ 'लॉग-लॉस' if lang == 'mr' else 'Log-loss' }}</div><div class="value" style="font-size:1.2rem;">{{ report.calibration.log_loss_before }} → {{ report.calibration.log_loss_after }}</div><div class="delta down">{{ 'कमी चांगले' if lang == 'mr' else 'lower is better' }}</div></div>
+            <div class="kpi"><div class="label">{{ 'ब्रायर स्कोअर' if lang == 'mr' else 'Brier score' }}</div><div class="value" style="font-size:1.2rem;">{{ report.calibration.brier_before }} → {{ report.calibration.brier_after }}</div><div class="delta down">{{ 'कमी चांगले' if lang == 'mr' else 'lower is better' }}</div></div>
+            <div class="kpi"><div class="label">{{ 'निर्णय' if lang == 'mr' else 'Decision' }}</div><div class="value" style="font-size:1.2rem;">{{ ('लागू' if lang == 'mr' else 'applied') if report.calibration.applied else ('लागू नाही' if lang == 'mr' else 'not applied') }}</div><div class="delta">{{ report.shipped.label }}</div></div>
+        </div>
+        <p class="heatmap-note">{{ report.calibration.reason }}</p>
+    </section>
+    {% endif %}
+
+    {% if report.caveat %}
+    <div class="notice warn"><i class="bi bi-info-circle"></i><span>{{ report.caveat }}</span></div>
+    {% endif %}
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="bi bi-shield-check"></i> {{ 'सुरक्षा-कडे व मर्यादा' if lang == 'mr' else 'Guardrails & limits' }}</h2>
+        </div>
+        <ul class="feature-list">
+            <li><i class="bi bi-check2-circle"></i><span>{{ 'अंदाजापूर्वी हवामान/माती जुळणी तपासली जाते व अनुपयुक्त पिके वगळली जातात.' if lang == 'mr' else 'An agro-climatic suitability gate screens out crops before ranking and excludes clear mismatches.' }}</span></li>
+            <li><i class="bi bi-check2-circle"></i><span>{{ 'मॉडेलची संभाव्यता कॅलिब्रेट न केलेली आहे; एकत्रित गुणात पाणी गुणक व जुळणी वजनासह दाखवली जाते.' if lang == 'mr' else 'Model probabilities are uncalibrated; the ranking blends them with agronomic fit and water availability.' }}</span></li>
+            <li><i class="bi bi-check2-circle"></i><span>{{ 'शून्य-संभाव्यता (एक-हॉट) अंदाज आल्यास क्रमवारी कृषी-जुळणीवर आधारित होते.' if lang == 'mr' else 'When the classifier is inconclusive, ranking falls back to agro-climatic and water fit.' }}</span></li>
+        </ul>
+    </section>
+
+    {% endif %}
+</div>
+{% endblock %}

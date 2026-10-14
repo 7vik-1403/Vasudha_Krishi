@@ -1,5 +1,5 @@
 import json
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 
 from flask_login import UserMixin, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -57,6 +57,8 @@ class Farm(db.Model):
     water_days = db.Column(db.Float)
     water_note = db.Column(db.String(255))
 
+    share_token = db.Column(db.String(32), unique=True, index=True)
+
     lat = db.Column(db.Float)
     lon = db.Column(db.Float)
     district = db.Column(db.String(120))
@@ -91,6 +93,13 @@ class Farm(db.Model):
     notes = db.relationship(
         "FarmNote", back_populates="farm", cascade="all, delete-orphan", lazy="selectin",
         order_by="FarmNote.created_at.desc()",
+    )
+    records = db.relationship(
+        "FarmRecord", back_populates="farm", cascade="all, delete-orphan", lazy="selectin",
+        order_by="FarmRecord.recorded_on.desc()",
+    )
+    budgets = db.relationship(
+        "FarmBudget", back_populates="farm", cascade="all, delete-orphan", lazy="selectin",
     )
 
     @property
@@ -247,6 +256,113 @@ class FarmNote(db.Model):
             "text": self.text,
             "source": self.source,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+        }
+
+
+class FarmRecord(db.Model):
+    """A dated entry in a farm's history: soil test, expense, harvest, irrigation or note.
+
+    Kept as a separate table so existing databases are extended safely (the table is
+    created on startup; no column migration of existing rows is needed).
+    """
+
+    __tablename__ = "farm_records"
+
+    KINDS = ("soil", "expense", "harvest", "irrigation", "observation")
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    farm_id = db.Column(db.Integer, db.ForeignKey("farms.id", ondelete="CASCADE"), nullable=False, index=True)
+    kind = db.Column(db.String(30), nullable=False, default="observation")
+    recorded_on = db.Column(db.Date, default=date.today, index=True)
+    crop = db.Column(db.String(60))
+    amount = db.Column(db.Float)
+    quantity = db.Column(db.Float)
+    unit = db.Column(db.String(20))
+    # Expense-specific columns (added later; safe ALTER TABLE ADD COLUMN on sqlite).
+    category = db.Column(db.String(40))
+    season = db.Column(db.String(40))
+    vendor = db.Column(db.String(120))
+    payment_method = db.Column(db.String(30))
+    data_json = db.Column(db.Text)
+    note = db.Column(db.Text)
+    created_at = db.Column(db.DateTime, default=utcnow)
+
+    farm = db.relationship("Farm", back_populates="records")
+
+    @property
+    def data(self):
+        try:
+            return json.loads(self.data_json or "{}")
+        except ValueError:
+            return {}
+
+    @property
+    def expense_category(self):
+        """Category key for an expense row, reading the new column then the legacy JSON."""
+        return (self.category or self.data.get("category") or "other")
+
+    @property
+    def expense_season(self):
+        return self.season or self.data.get("season") or None
+
+    @property
+    def expense_vendor(self):
+        return self.vendor or self.data.get("vendor") or None
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "kind": self.kind,
+            "recorded_on": self.recorded_on.isoformat() if self.recorded_on else None,
+            "crop": self.crop,
+            "amount": self.amount,
+            "quantity": self.quantity,
+            "unit": self.unit,
+            "category": self.category,
+            "season": self.season,
+            "vendor": self.vendor,
+            "payment_method": self.payment_method,
+            "data": self.data,
+            "note": self.note,
+        }
+
+
+class FarmBudget(db.Model):
+    """A spending budget for a whole farm, one crop, or one growing season."""
+
+    __tablename__ = "farm_budgets"
+
+    SCOPES = ("farm", "crop", "season")
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    farm_id = db.Column(db.Integer, db.ForeignKey("farms.id", ondelete="CASCADE"), nullable=False, index=True)
+    scope = db.Column(db.String(20), nullable=False, default="farm")
+    crop = db.Column(db.String(60))
+    season = db.Column(db.String(40))
+    amount = db.Column(db.Float, nullable=False)
+    warn_pct = db.Column(db.Integer, default=80, nullable=False)
+    created_at = db.Column(db.DateTime, default=utcnow)
+    updated_at = db.Column(db.DateTime, default=utcnow, onupdate=utcnow)
+
+    farm = db.relationship("Farm", back_populates="budgets")
+
+    def matches(self, crop=None, season=None):
+        if self.scope == "crop":
+            return bool(self.crop) and self.crop == crop
+        if self.scope == "season":
+            return bool(self.season) and self.season == season
+        return True
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "scope": self.scope,
+            "crop": self.crop,
+            "season": self.season,
+            "amount": self.amount,
+            "warn_pct": self.warn_pct,
         }
 
 

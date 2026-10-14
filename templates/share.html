@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% block title %}{{ farm.name }} - {{ 'शेअर केलेली आराखडा' if lang == 'mr' else 'shared plan' }}{% endblock %}
+
+{% block body %}
+{% set kind_labels = {'irrigation': ('सिंचन', 'Irrigation'), 'pesticide': ('फवारणी', 'Spray'), 'spray': ('फवारणी', 'Spray'), 'fertilizer': ('खत', 'Fertilizer'), 'harvest': ('कापणी', 'Harvest'), 'sowing': ('पेरणी', 'Sowing'), 'other': ('इतर', 'Other')} %}
+<div class="page-body">
+    <div class="container-xl">
+
+        <div class="farm-head">
+            <img class="crop-photo"
+                 src="{{ url_for('static', filename='img/' + (farm.crop or 'rice') + '.jpg') }}"
+                 alt="{{ farm.crop }}"
+                 onerror="this.style.display='none'">
+            <div>
+                <div class="eyebrow" style="color:#86efac;">
+                    <i class="bi bi-share"></i> {{ 'शेअर केलेला शेत आराखडा' if lang == 'mr' else 'Shared field plan' }}
+                </div>
+                <h1>{{ farm.name }}</h1>
+                <div class="where">
+                    {{ farm.village or '' }}{{ ', ' if farm.village else '' }}{{ farm.district or ('स्थान सेट' if lang == 'mr' else 'Location set') }}
+                    {% if farm.state %}, {{ farm.state }}{% endif %}
+                    &middot; {{ (farm.area_acres ~ ' एकर') if (farm.area_acres and lang == 'mr') else (farm.area_acres ~ ' ac' if farm.area_acres else ('क्षेत्र सेट नाही' if lang == 'mr' else 'area not set')) }}
+                </div>
+                <div class="chips">
+                    {% if farm.crop %}<span class="chip-tag"><i class="bi bi-seedling"></i> {{ farm.crop }}</span>{% endif %}
+                    {% if farm.water_source %}
+                    <span class="chip-tag"><i class="bi bi-droplet"></i>
+                        {{ water.source_label_mr if lang == 'mr' else water.source_label or farm.water_source }}
+                        {% if farm.water_days is not none %} · {{ farm.water_days|int }}/wk{% endif %}</span>
+                    {% endif %}
+                    {% if farm.soil_ph %}<span class="chip-tag">pH {{ farm.soil_ph }}</span>{% endif %}
+                    {% if farm.has_npk %}<span class="chip-tag">N {{ farm.soil_n|int }} · P {{ farm.soil_p|int }} · K {{ farm.soil_k|int }}</span>{% endif %}
+                </div>
+            </div>
+            <div class="actions">
+                <a href="{{ url_for('main.recommend_view') }}" class="btn-primary-pill">
+                    <i class="bi bi-pin-map"></i> {{ 'माझा आराखडा तयार करा' if lang == 'mr' else 'Get your own plan' }}
+                </a>
+            </div>
+        </div>
+
+        <div class="notice info"><i class="bi bi-eye"></i>
+            <span>{{ 'ही फक्त-वाचनीय लिंक आहे. शेत मालकाच्या खाजगी नोंदी व खर्च इथे दिसत नाहीत.' if lang == 'mr'
+                   else 'This is a read-only link. The owner\'s private notes and expenses are not shown here.' }}</span>
+        </div>
+
+        {% if latest %}
+        <div class="kpi-band">
+            <div class="kpi"><div class="label">{{ 'शिफारस केलेले पीक' if lang == 'mr' else 'Recommended crop' }}</div><div class="value" style="font-size:1.15rem;">{{ latest.crop|title }}</div><div class="delta">{{ latest.crop_category|title if latest.crop_category else '&nbsp;'|safe }}</div></div>
+            <div class="kpi"><div class="label">{{ 'विश्वास' if lang == 'mr' else 'Confidence' }}</div><div class="value">{{ (latest.confidence * 100)|round(1) if latest.confidence else '—' }}{% if latest.confidence %}<small>%</small>{% endif %}</div><div class="delta">{{ 'क्रमवारी मॉडेल' if lang == 'mr' else 'ranking model' }}</div></div>
+            <div class="kpi"><div class="label">{{ 'पाऊस' if lang == 'mr' else 'Rainfall' }}</div><div class="value">{{ farm.rainfall_mm|int if farm.rainfall_mm else '—' }}<small> mm</small></div><div class="delta">{{ farm.temp_c if farm.temp_c else '—' }}°C</div></div>
+            {% if market and market.revenue and market.revenue.total is not none %}
+            <div class="kpi"><div class="label">{{ 'अंदाजे एकूण उत्पन्न' if lang == 'mr' else 'Est. gross' }}</div><div class="value">₹{{ '{:,}'.format(market.revenue.total) }}</div><div class="delta up">{{ market.price|int if market.price else '—' }} ₹/q</div></div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="two-col">
+            {% if latest and latest.fertilizer.available %}
+            <section class="panel">
+                <div class="panel-head"><h2><i class="bi bi-bag-plus"></i> {{ 'खत डोस' if lang == 'mr' else 'Fertilizer dose' }}</h2></div>
+                <div class="dose-grid">
+                    <div class="dose-cell"><strong>{{ latest.fertilizer.products.urea_kg_ha }}</strong><span>Urea kg/ha</span></div>
+                    <div class="dose-cell"><strong>{{ latest.fertilizer.products.dap_kg_ha }}</strong><span>DAP kg/ha</span></div>
+                    <div class="dose-cell"><strong>{{ latest.fertilizer.products.mop_kg_ha }}</strong><span>MOP kg/ha</span></div>
+                </div>
+                {% if latest.fertilizer.note %}<p class="small text-muted mb-0 mt-3">{{ latest.fertilizer.note_mr if lang == 'mr' else latest.fertilizer.note }}</p>{% endif %}
+            </section>
+            {% endif %}
+
+            {% if water and water.known %}
+            <section class="panel">
+                <div class="panel-head"><h2><i class="bi bi-droplet-half"></i> {{ 'पाण्याचा आराखडा' if lang == 'mr' else 'Water plan' }}</h2></div>
+                <div class="data-row"><span>{{ 'आवश्यकता' if lang == 'mr' else 'Requirement' }}</span><strong>{{ water.need_label_mr if lang == 'mr' else water.need_label }} ({{ water.required_days }}/wk)</strong></div>
+                <div class="data-row"><span>{{ 'स्रोत' if lang == 'mr' else 'Source' }}</span><strong>{{ water.source_label_mr if lang == 'mr' else (water.source_label or '—') }}</strong></div>
+                {% if water.days_per_week is not none %}<div class="data-row"><span>{{ 'उपलब्ध' if lang == 'mr' else 'Supplied' }}</span><strong>{{ water.days_per_week }}/week</strong></div>{% endif %}
+                <div class="notice {% if water.status == 'ok' %}ok{% elif water.status == 'short' %}warn{% else %}info{% endif %} mt-3 mb-0">
+                    <i class="bi bi-info-circle"></i>
+                    <span>{{ water.advice_mr if lang == 'mr' else water.advice_en }}</span>
+                </div>
+            </section>
+            {% endif %}
+        </div>
+
+        {% if market %}
+        <section class="panel">
+            <div class="panel-head"><h2><i class="bi bi-graph-up-arrow"></i> {{ 'बाजार व परतावा' if lang == 'mr' else 'Market & returns' }}</h2></div>
+            {% if market.price %}
+            <div class="data-row"><span>{{ 'किमान आधारभूत किंमत' if lang == 'mr' else 'MSP' }}</span><strong>₹{{ market.price|int }}/{{ 'क्विंटल' if lang == 'mr' else 'quintal' }}</strong></div>
+            {% if market.revenue %}
+            <div class="data-row"><span>{{ 'एकरी सकल' if lang == 'mr' else 'Gross per acre' }}</span><strong>₹{{ market.revenue.per_acre|int }}</strong></div>
+            {% if market.revenue.total is not none %}
+            <div class="data-row"><span>{{ 'एकूण सकल' if lang == 'mr' else 'Gross total' }}</span><strong>₹{{ '{:,}'.format(market.revenue.total) }}</strong></div>
+            {% endif %}
+            {% endif %}
+            {% else %}
+            <p class="small text-muted mb-0">{{ market.note or ('या पिकासाठी थेट हमीभाव नाही.' if lang == 'mr' else 'No direct MSP for this crop.') }}</p>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        {% if tasks %}
+        <section class="panel">
+            <div class="panel-head"><h2><i class="bi bi-calendar2-week"></i> {{ 'कामांचे वेळापत्रक' if lang == 'mr' else 'Work schedule' }}</h2></div>
+            <ul class="task-list">
+                {% for task in tasks %}
+                <li class="task-row kind-{{ task.kind }}">
+                    <span class="task-dot"></span>
+                    <div class="task-body">
+                        <div class="task-title">{{ task.title(lang) }}</div>
+                        <div class="task-meta">
+                            <span class="mini-chip">{{ kind_labels.get(task.kind, (task.kind, task.kind))[0 if lang == 'mr' else 1] }}</span>
+                            {% if task.due_date %}<span>{{ task.due_date.strftime('%d %b %Y') }}</span>{% endif %}
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+        <p class="text-center text-muted small mt-4">
+            {{ 'सादर' if lang == 'mr' else 'Shared with' }} <strong>Vasudha Krishi</strong> &middot;
+            {{ 'मृदा · पाणी · बाजार' if lang == 'mr' else 'soil · water · market' }}
+        </p>
+    </div>
+</div>
+{% endblock %}

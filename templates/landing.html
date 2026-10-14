@@ -9,15 +9,15 @@
             <div class="hero-kicker"><i class="bi bi-flower2"></i> माझी जमीन, माझा आराखडा</div>
             <h1>{{ 'हंगामाचे नियोजन' if lang == 'mr' else 'Plan the season on' }} <span class="hero-accent">{{ 'तुमच्या' if lang == 'mr' else 'your' }}</span> {{ 'शेतासाठी करा - सरासरीवर नाही.' if lang == 'mr' else 'field - not on an average.' }}</h1>
             <p class="hero-lead">
-                {{ 'वसुधा कृषी मॅपवर टाकलेल्या तंतोतंत ठिकाणाची माती व हवामान वाचते, तुमच्याकडे खरे किती पाणी आहे ते विचारते, मागील वर्षाचे दर तपासते आणि खत डोस व कीटकनाशक कॅलेंडरसह पीक आराखडा देते.'
+                {{ 'वसुधा कृषी तुमच्या शेताची माती व हवामान पाहते, तुमच्याकडे खरे किती पाणी आहे ते विचारते, मागील वर्षाचे दर तपासते आणि खत डोस व कामांच्या वेळापत्रकासह पीक आराखडा देते.'
                    if lang == 'mr' else
-                   'Vasudha Krishi reads the soil and climate of the exact point you drop on the map, asks how much water you actually have, checks last year\u2019s prices, and hands you a crop plan with fertilizer doses and a pesticide calendar you can tick off.' }}
+                   'Vasudha Krishi reads the soil and weather of your exact plot, asks how much water you actually have, checks last year\u2019s prices, and gives you a crop plan with fertilizer doses and a work calendar you can tick off.' }}
             </p>
 
             <div class="hero-points">
-                <div class="point"><i class="bi bi-pin-map-fill"></i><span>{{ 'तुमचा प्लॉट पिन करा - त्या बिंदूचा माती pH, पोत, N-P-K व पाऊस' if lang == 'mr' else 'Pin your plot - soil pH, texture, N-P-K and rainfall for that point' }}</span></div>
-                <div class="point"><i class="bi bi-droplet-half"></i><span>{{ 'तुम्ही सांगितलेले पाणी, पावसाचा अंदाज नाही - पाऊस, विहीर, कालवा किंवा ठिबक' if lang == 'mr' else 'Water you tell us, not rainfall guesses - rain-fed, well, canal or drip' }}</span></div>
-                <div class="point"><i class="bi bi-graph-up-arrow"></i><span>{{ 'पेरणीपूर्वी मागील वर्षाचा हमीभाव, दर कल व एकरी उत्पन्न' if lang == 'mr' else 'Last year\u2019s MSP, price trend and revenue per acre before you sow' }}</span></div>
+                <div class="point"><i class="bi bi-pin-map-fill"></i><span>{{ 'तुमचा प्लॉट पिन करा - त्या जागेची माती व पाऊस आम्ही वाचतो' if lang == 'mr' else 'Pin your plot - we read the soil and rainfall for that exact spot' }}</span></div>
+                <div class="point"><i class="bi bi-droplet-half"></i><span>{{ 'तुम्ही सांगितलेले पाणी, अंदाज नाही - पाऊस, विहीर, कालवा किंवा ठिबक' if lang == 'mr' else 'Water you tell us, not rainfall guesses - rain-fed, well, canal or drip' }}</span></div>
+                <div class="point"><i class="bi bi-graph-up-arrow"></i><span>{{ 'पेरणीपूर्वी मागील वर्षाचा हमीभाव, दर कल व एकरी उत्पन्न' if lang == 'mr' else 'Last year\u2019s support price, price trend and revenue per acre before you sow' }}</span></div>
                 <div class="point"><i class="bi bi-calendar2-week"></i><span>{{ 'खत, फवारणी व सिंचनाची कामे एकाच शेत कॅलेंडरवर' if lang == 'mr' else 'Fertilizer, spray and irrigation tasks on one farm calendar' }}</span></div>
             </div>
 
@@ -26,6 +26,17 @@
                 <div class="hstat"><strong>5</strong><span>{{ 'पीक गट' if lang == 'mr' else 'crop groups to pick from' }}</span></div>
                 <div class="hstat"><strong>EN / मरा</strong><span>{{ 'संपूर्ण इंटरफेस' if lang == 'mr' else 'full interface' }}</span></div>
             </div>
+
+            {% if config.DEMO_MODE_ENABLED %}
+            <div class="hero-demo">
+                <a href="{{ url_for('auth.demo_login') }}" class="btn-ghost">
+                    <i class="bi bi-play-circle"></i> {{ 'डेमो पहा' if lang == 'mr' else 'Explore the live demo' }}
+                </a>
+                <span class="hero-demo-note">
+                    {{ 'खाते नको - दोन तयार शेते व सल्ल्यांसह' if lang == 'mr' else 'No sign-up - opens two ready-made farms with full plans' }}
+                </span>
+            </div>
+            {% endif %}
         </div>
 
         <div class="hero-auth">
@@ -136,6 +147,44 @@
                    if lang == 'mr' else
                    'Ask Gemini in English or Marathi for doses and spray timing - its answers and tasks land on your farm\u2019s calendar.' }}</p>
         </div>
+    </div>
+</section>
+
+<section class="how-band">
+    <div class="container-xl">
+        <div class="how-head">
+            <span class="eyebrow">{{ 'कसे चालते' if lang == 'mr' else 'How it works' }}</span>
+            <h2>{{ 'तीन पायऱ्यांत पेरणीचा निर्णय' if lang == 'mr' else 'From a pin to a full crop plan in three steps' }}</h2>
+        </div>
+        <div class="how-grid">
+            <div class="how-step">
+                <span class="how-no">1</span>
+                <div class="feature-icon"><i class="bi bi-pin-map-fill"></i></div>
+                <h3>{{ 'ठिकाण पिन करा' if lang == 'mr' else 'Pin the field' }}</h3>
+                <p>{{ 'नकाशावर क्लिक करा किंवा जिल्हा निवडा. आम्ही त्या बिंदूची माती (SoilGrids) व हवामान (Open-Meteo) मिळवतो.' if lang == 'mr' else 'Click the map or pick a district. We fetch the soil (SoilGrids) and climate (Open-Meteo) for that exact point.' }}</p>
+            </div>
+            <div class="how-step">
+                <span class="how-no">2</span>
+                <div class="feature-icon alt"><i class="bi bi-sliders2"></i></div>
+                <h3>{{ 'पाणी व माती सांगा' if lang == 'mr' else 'Tell us water & soil' }}</h3>
+                <p>{{ 'सिंचन स्रोत, आठवड्यातील दिवस आणि Soil Health Card N-P-K. हे पीक क्रम, डोस व वेळापत्रक बदलते.' if lang == 'mr' else 'Water source, days per week and Soil Health Card N-P-K. These reshape the crop ranking, doses and schedule.' }}</p>
+            </div>
+            <div class="how-step">
+                <span class="how-no">3</span>
+                <div class="feature-icon"><i class="bi bi-clipboard2-check"></i></div>
+                <h3>{{ 'आराखडा मिळवा व जतन करा' if lang == 'mr' else 'Get & save the plan' }}</h3>
+                <p>{{ 'पीक, खत डोस, बाजार भाव, नफा अंदाज, फवारणी व कॅलेंडर एकत्र; शेत जतन करून कामे टिक करा.' if lang == 'mr' else 'Crop, fertilizer doses, market price, profit estimate, spray plan and a calendar - save the field and tick tasks off.' }}</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="trust-band">
+    <div class="container-xl trust-inner">
+        <div class="trust-item"><i class="bi bi-database-check"></i><div><strong>SoilGrids 250 m</strong><small>{{ 'ISRIC माती नकाशा' if lang == 'mr' else 'ISRIC global soil grid' }}</small></div></div>
+        <div class="trust-item"><i class="bi bi-cloud-sun"></i><div><strong>Open-Meteo</strong><small>{{ 'तापमान, आर्द्रता, अंदाज' if lang == 'mr' else 'temperature, humidity, forecast' }}</small></div></div>
+        <div class="trust-item"><i class="bi bi-cloud-rain-heavy"></i><div><strong>IMD</strong><small>{{ 'जिल्हा पाऊस सरासरी' if lang == 'mr' else 'district rainfall normals' }}</small></div></div>
+        <div class="trust-item"><i class="bi bi-currency-rupee"></i><div><strong>CACP MSP</strong><small>{{ 'हमीभाव संदर्भ' if lang == 'mr' else 'support price reference' }}</small></div></div>
     </div>
 </section>
 {% endblock %}

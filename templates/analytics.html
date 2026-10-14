@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% set lang = session.get('language', 'en') %}
+{% block title %}{{ 'विश्लेषण' if lang == 'mr' else 'Analytics' }} - Vasudha Krishi{% endblock %}
+
+{% block body %}
+<section class="page-head">
+    <div class="container-xl page-head-inner">
+        <div>
+            <div class="eyebrow">{{ 'शेतांचे सारांश' if lang == 'mr' else 'Across all your fields' }}</div>
+            <h1>{{ 'विश्लेषण' if lang == 'mr' else 'Analytics' }}</h1>
+            <p class="sub">
+                {{ 'खर्च, उत्पन्न, कामे व माती - एका नजरेत.' if lang == 'mr'
+                   else 'Expenses, returns, tasks and soil - all your farms in one view.' }}
+            </p>
+        </div>
+        <div class="head-actions">
+            <a href="{{ url_for('main.index') }}" class="btn-ghost dark"><i class="bi bi-grid-home"></i> {{ 'डॅशबोर्ड' if lang == 'mr' else 'Dashboard' }}</a>
+        </div>
+    </div>
+</section>
+
+<div class="container-xl page-body">
+    {% if not data.has_data %}
+    <div class="empty-state">
+        <div class="empty-icon"><i class="bi bi-bar-chart-line"></i></div>
+        <h2>{{ 'अजून डेटा नाही' if lang == 'mr' else 'Nothing to analyse yet' }}</h2>
+        <p>{{ 'एक शेत जतन करा आणि नोंदी जोडा - मग खर्च, उत्पन्न व कामांची आकडेवारी येथे दिसेल.' if lang == 'mr' else 'Save a farm and add a few records; expenses, harvests and tasks then show up here.' }}</p>
+        <a href="{{ url_for('main.recommend_view') }}" class="btn-primary-pill">{{ 'शिफारस मिळवा' if lang == 'mr' else 'Get a recommendation' }}</a>
+    </div>
+    {% else %}
+
+    <div class="kpi-band">
+        <div class="kpi"><div class="label">{{ 'शेतं' if lang == 'mr' else 'Farms' }}</div><div class="value">{{ data.kpis.farms }}</div><div class="delta">{{ data.kpis.acres }} {{ 'एकर' if lang == 'mr' else 'acres' }}</div></div>
+        <div class="kpi"><div class="label">{{ 'पिके' if lang == 'mr' else 'Crops' }}</div><div class="value">{{ data.kpis.crops }}</div><div class="delta">{{ data.kpis.tasks_pending }} {{ 'प्रलंबित कामे' if lang == 'mr' else 'tasks pending' }}</div></div>
+        <div class="kpi"><div class="label">{{ 'एकूण खर्च' if lang == 'mr' else 'Total expenses' }}</div><div class="value">₹{{ '{:,}'.format(data.kpis.expense_total) }}</div><div class="delta down"><i class="bi bi-arrow-down"></i> {{ 'नोंदवलेला' if lang == 'mr' else 'recorded' }}</div></div>
+        <div class="kpi"><div class="label">{{ 'उत्पन्न' if lang == 'mr' else 'Harvest revenue' }}</div><div class="value">₹{{ '{:,}'.format(data.kpis.harvest_total) }}</div><div class="delta up"><i class="bi bi-arrow-up"></i> {{ data.kpis.harvest_qty_kg }} {{ 'किग्रॅ' if lang == 'mr' else 'kg' }}</div></div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3><i class="bi bi-cash-coin"></i> {{ 'खर्च - प्रकारानुसार' if lang == 'mr' else 'Expenses by category' }}</h3>
+            <p class="chart-sub">{{ '₹' }}</p>
+            <div class="chart-box"><canvas id="chart-expense-cat"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h3><i class="bi bi-calendar3"></i> {{ 'खर्च - महिन्यानुसार' if lang == 'mr' else 'Expenses by month' }}</h3>
+            <p class="chart-sub">{{ '₹' }}</p>
+            <div class="chart-box"><canvas id="chart-expense-month"></canvas></div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3><i class="bi bi-pie-chart"></i> {{ 'पिके - क्षेत्रानुसार' if lang == 'mr' else 'Crops by area' }}</h3>
+            <p class="chart-sub">{{ 'एकर' if lang == 'mr' else 'acres' }}</p>
+            <div class="chart-box"><canvas id="chart-crops"></canvas></div>
+        </div>
+        <div class="chart-card">
+            <h3><i class="bi bi-check2-square"></i> {{ 'कामे' if lang == 'mr' else 'Tasks' }}</h3>
+            <p class="chart-sub">{{ data.tasks.by_kind|length }} {{ 'प्रकार' if lang == 'mr' else 'kinds' }}</p>
+            <div class="chart-box"><canvas id="chart-tasks"></canvas></div>
+        </div>
+    </div>
+
+    {% if data.harvest.by_crop %}
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3><i class="bi bi-basket"></i> {{ 'उत्पन्न - पिकानुसार' if lang == 'mr' else 'Harvest revenue by crop' }}</h3>
+            <p class="chart-sub">{{ '₹' }}</p>
+            <div class="chart-box"><canvas id="chart-harvest"></canvas></div>
+        </div>
+        {% if data.soil %}
+        <div class="chart-card">
+            <h3><i class="bi bi-droplet-half"></i> {{ 'माती N-P-K - शेतानुसार' if lang == 'mr' else 'Soil N-P-K by farm' }}</h3>
+            <p class="chart-sub">{{ 'किग्रॅ/हेक्टर' if lang == 'mr' else 'kg per hectare' }}</p>
+            <div class="chart-box"><canvas id="chart-soil"></canvas></div>
+        </div>
+        {% endif %}
+    </div>
+    {% elif data.soil %}
+    <div class="chart-card">
+        <h3><i class="bi bi-droplet-half"></i> {{ 'माती N-P-K - शेतानुसार' if lang == 'mr' else 'Soil N-P-K by farm' }}</h3>
+        <p class="chart-sub">{{ 'किग्रॅ/हेक्टर' if lang == 'mr' else 'kg per hectare' }}</p>
+        <div class="chart-box tall"><canvas id="chart-soil"></canvas></div>
+    </div>
+    {% endif %}
+
+    <section class="panel">
+        <div class="panel-head">
+            <h2><i class="bi bi-table"></i> {{ 'शेतनिहाय सारांश' if lang == 'mr' else 'Per-farm summary' }}</h2>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'शेत' if lang == 'mr' else 'Farm' }}</th>
+                        <th>{{ 'पीक' if lang == 'mr' else 'Crop' }}</th>
+                        <th>{{ 'क्षेत्र' if lang == 'mr' else 'Area' }}</th>
+                        <th>N</th><th>P</th><th>K</th><th>pH</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.soil %}
+                    <tr>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.crop|title if row.crop else '-' }}</td>
+                        <td>{{ row.acres if row.acres is not none else '-' }}</td>
+                        <td>{{ row.n if row.n is not none else '-' }}</td>
+                        <td>{{ row.p if row.p is not none else '-' }}</td>
+                        <td>{{ row.k if row.k is not none else '-' }}</td>
+                        <td>{{ row.ph if row.ph is not none else '-' }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="application/json" id="analytics-data">{{ analytics_json|safe }}</script>
+<script>
+(function () {
+    var el = document.getElementById("analytics-data");
+    if (!el || !window.VKCharts || !window.Chart) return;
+    var data = JSON.parse(el.textContent);
+    var C = window.VKCharts;
+    var lang = (window.I18N && window.I18N.language) || "en";
+    var charts = [];
+
+    function build() {
+        charts.forEach(function (c) { try { c.destroy(); } catch (e) {} });
+        charts = [];
+        var p = C.palette();
+        var pal = [p.brand, p.sky, p.sun, p.clay, p.brand2, "#8b5cf6", "#14b8a6", "#f472b6"];
+
+        function series(arr, key) { return arr.map(function (r) { return r[key]; }); }
+        function labels(arr, key) { return arr.map(function (r) { return r[key]; }); }
+
+        var expCat = data.expenses.by_category;
+        if (expCat.length) charts.push(new Chart(document.getElementById("chart-expense-cat"), {
+            type: "doughnut",
+            data: { labels: labels(expCat, "category"), datasets: [{ data: series(expCat, "amount"), backgroundColor: pal, borderWidth: 0 }] },
+            options: C.options({ cutout: "62%", plugins: { legend: { position: "right", labels: { color: p.ink, boxWidth: 12 } } } })
+        }));
+
+        var expMonth = data.expenses.by_month;
+        if (expMonth.some(function (r) { return r.amount; })) charts.push(new Chart(document.getElementById("chart-expense-month"), {
+            type: "line",
+            data: { labels: labels(expMonth, "month"), datasets: [{ data: series(expMonth, "amount"), borderColor: p.clay, backgroundColor: C.rgba(p.clay, 0.15), fill: true, tension: 0.35, borderWidth: 3, pointRadius: 3 }] },
+            options: C.options({ plugins: { legend: { display: false } } })
+        }));
+
+        var crops = data.crops;
+        if (crops.length) charts.push(new Chart(document.getElementById("chart-crops"), {
+            type: "bar",
+            data: { labels: labels(crops, "crop"), datasets: [{ data: series(crops, "acres"), backgroundColor: pal, borderRadius: 6 }] },
+            options: C.options({ plugins: { legend: { display: false } } })
+        }));
+
+        var byKind = data.tasks.by_kind;
+        if (byKind.length) charts.push(new Chart(document.getElementById("chart-tasks"), {
+            type: "bar",
+            data: {
+                labels: labels(byKind, "kind"),
+                datasets: [
+                    { label: lang === "mr" ? "पूर्ण" : "Done", data: series(byKind, "done"), backgroundColor: C.rgba(p.brand, 0.85), borderRadius: 6, stack: "s" },
+                    { label: lang === "mr" ? "प्रलंबित" : "Pending", data: series(byKind, "pending"), backgroundColor: C.rgba(p.sun, 0.85), borderRadius: 6, stack: "s" }
+                ]
+            },
+            options: C.options({ plugins: { legend: { position: "bottom", labels: { color: p.ink, boxWidth: 12 } } }, scales: { x: { stacked: true, ticks: { color: p.ink }, grid: { display: false } }, y: { stacked: true, ticks: { color: p.muted }, grid: { color: p.grid } } } })
+        }));
+
+        var harvest = data.harvest.by_crop;
+        var hEl = document.getElementById("chart-harvest");
+        if (hEl && harvest.length) charts.push(new Chart(hEl, {
+            type: "bar",
+            data: { labels: labels(harvest, "crop"), datasets: [{ data: series(harvest, "revenue"), backgroundColor: C.rgba(p.brand, 0.8), borderRadius: 6 }] },
+            options: C.options({ indexAxis: "y", plugins: { legend: { display: false } } })
+        }));
+
+        var soil = data.soil;
+        var sEl = document.getElementById("chart-soil");
+        if (sEl && soil.length) charts.push(new Chart(sEl, {
+            type: "bar",
+            data: {
+                labels: soil.map(function (f) { return f.name; }),
+                datasets: [
+                    { label: "N", data: soil.map(function (f) { return f.n; }), backgroundColor: C.rgba(p.sky, 0.8), borderRadius: 5 },
+                    { label: "P", data: soil.map(function (f) { return f.p; }), backgroundColor: C.rgba(p.brand, 0.8), borderRadius: 5 },
+                    { label: "K", data: soil.map(function (f) { return f.k; }), backgroundColor: C.rgba(p.sun, 0.85), borderRadius: 5 }
+                ]
+            },
+            options: C.options({ plugins: { legend: { position: "bottom", labels: { color: p.ink, boxWidth: 12 } } } })
+        }));
+    }
+
+    window.addEventListener("vk:theme", build);
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build);
+    else build();
+})();
+</script>
+{% endblock %}

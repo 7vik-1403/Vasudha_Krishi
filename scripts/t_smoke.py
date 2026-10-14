@@ -1,3 +1,4 @@
+import io
 import os
 import sys
 
@@ -68,12 +69,12 @@ r = client.get("/api/resolve?lat=28.6&lon=77.2")
 print("GET /api/resolve caching round:", r.status_code)
 
 r = client.post(
-    "/",
+    "/recommend",
     data={"lat": "30.9", "lon": "75.8", "month": "9", "n": "40", "p": "35", "k": "45", "ph": "7.0",
           "farm_name": "North plot", "area_acres": "2.5"},
 )
-check("POST / (predict)", r)
-print("  crop in page:", b"text-capitalize" in r.data)
+check("POST /recommend (predict)", r)
+print("  plan answer rendered:", b"answer-line" in r.data or b"text-capitalize" in r.data)
 
 r = client.post(
     "/farms/save",
@@ -116,6 +117,64 @@ r = client.post("/api/chat", json={"message": "What dose of urea for rice?"})
 check("POST /api/chat (no key configured)", r)
 payload = r.get_json()
 print("  ok:", payload.get("ok"), "| error:", payload.get("error"), "| reply:", (payload.get("reply") or "")[:90])
+
+# --- model & analytics pages -------------------------------------------------
+r = client.get("/model")
+check("GET /model", r)
+print("  has confusion matrix:", b"Confusion matrix" in r.data)
+
+demo_client = app.test_client()
+r = demo_client.get("/account/demo", follow_redirects=True)
+check("GET /account/demo", r)
+r = demo_client.get("/analytics")
+check("GET /analytics (demo user)", r)
+print("  has kpi band:", b"kpi-band" in r.data, "| has chart json:", b"analytics-data" in r.data)
+
+# --- share link --------------------------------------------------------------
+with app.app_context():
+    from cropapp.models import Farm
+
+    farm = Farm.query.filter_by(name="North plot").first()
+    share_id = farm.id if farm else None
+
+if share_id:
+    r = client.post(f"/farms/{share_id}/share", follow_redirects=True)
+    check(f"POST /farms/{share_id}/share", r)
+    with app.app_context():
+        token = Farm.query.filter_by(name="North plot").first().share_token
+    anon = app.test_client()
+    r = anon.get(f"/share/{token}")
+    check("GET /share/<token> (anonymous)", r)
+    print("  read-only note present:", b"read-only" in r.data)
+
+# --- farm workspace tabs & expense manager -----------------------------------
+if share_id:
+    r = client.get(f"/farms/{share_id}?tab=overview")
+    check("GET /farms/<id> workspace", r)
+    print("  has tab bar:", b"ws-tabs" in r.data, "| has calendar:", b'id="cal-root"' in r.data,
+          "| has assistant:", b'id="pane-assistant"' in r.data)
+
+    r = client.post(
+        f"/farms/{share_id}/expenses",
+        data={"category": "seeds", "amount": "2500", "season": "Kharif", "next_tab": "expenses"},
+        follow_redirects=True,
+    )
+    check("POST /farms/<id>/expenses", r)
+    print("  expense shown:", b"seeds" in r.data and b"2,500" not in r.data)
+
+    r = client.post(f"/farms/{share_id}/budgets",
+                    data={"scope": "farm", "amount": "10000", "next_tab": "expenses"},
+                    follow_redirects=True)
+    check("POST /farms/<id>/budgets", r)
+    print("  budget shown:", b"budget-track" in r.data)
+
+# --- weather & disease (network-tolerant) ------------------------------------
+r = client.get("/api/forecast?lat=30.9&lon=75.8")
+print("GET /api/forecast ->", r.status_code, "(200 online / 502 offline)")
+
+r = client.post("/api/disease", data={"image": (io.BytesIO(b"fake-bytes"), "leaf.jpg")},
+                content_type="multipart/form-data")
+print("POST /api/disease ->", r.status_code, "|", (r.get_json() or {}).get("error"))
 
 failed = [item for item in results if not item[3]]
 print(f"\n{len(results) - len(failed)}/{len(results)} checks passed")

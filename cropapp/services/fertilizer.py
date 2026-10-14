@@ -1,6 +1,5 @@
 from cropapp.services.datasets import calendar_for, load_fertilizer_prices, load_requirements
-
-ACRES_PER_HA = 2.47105
+from cropapp.services.units import ACRES_PER_HA
 
 # Nutrient content of the standard Indian fertilizer grades.
 PRODUCTS = {

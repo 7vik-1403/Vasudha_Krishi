@@ -5,6 +5,7 @@ from datetime import date, datetime
 import requests
 
 from cropapp.models import FarmTask
+from cropapp.services import climate_risk, economics, history
 
 GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 ALLOWED_KINDS = {"fertilizer", "pesticide", "irrigation", "harvest", "other"}
@@ -90,6 +91,22 @@ def build_context(user, farm_id=None, today=None):
         pending.sort(key=lambda task: (task.due_date or date.max))
         for task in pending[:5]:
             lines.append(f"  Upcoming task: due {task.due_date} - {task.title_en}.")
+        records = list(getattr(farm, "records", []) or [])
+        if records:
+            latest_record = records[0]
+            lines.append(
+                f"  Latest field record: {latest_record.kind} on {latest_record.recorded_on}"
+                + (f" ({latest_record.note})" if latest_record.note else "") + "."
+            )
+            expenses = history.expense_summary(records)
+            if expenses["total"]:
+                lines.append(f"  Total recorded expenses so far: Rs {expenses['total']}.")
+            harvest = history.harvest_summary(records)
+            if harvest["count"]:
+                lines.append(
+                    f"  Recorded harvests: {harvest['count']} totalling {harvest['total_quantity']} kg / "
+                    f"Rs {harvest['total_revenue']}."
+                )
 
     latest = None
     for farm in farms:
@@ -151,6 +168,30 @@ def build_context(user, farm_id=None, today=None):
             )
         if latest.warnings:
             lines.append("  Warnings: " + " ".join(latest.warnings))
+
+        farm = latest.farm
+        profit = economics.profitability(
+            latest.crop,
+            area_acres=farm.area_acres if farm else None,
+            market=latest.msp or {}, fertilizer=latest.fertilizer, spray=latest.spray,
+            scenario="expected",
+        )
+        if profit.get("available"):
+            lines.append(
+                f"  Profit estimate (indicative, expected case): net about Rs {profit['net']['per_acre']}/acre, "
+                f"costs about Rs {profit['costs']['per_acre']}/acre, margin {profit['margin_pct']}%."
+            )
+        if farm and farm.temp_c is not None:
+            risk = climate_risk.assess(
+                {"climate": {
+                    "temp_c": farm.temp_c, "humidity_pct": farm.humidity_pct,
+                    "rainfall_normal_mm": farm.rainfall_mm, "rainfall_actual_mm": None,
+                    "rainfall_normal_is_state_average": False,
+                }},
+                latest.crop,
+            )
+            if risk["risks"]:
+                lines.append("  Climate risks: " + "; ".join(item["title_en"] for item in risk["risks"][:3]) + ".")
     return "\n".join(lines)
 
 
